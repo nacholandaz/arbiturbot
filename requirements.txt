@@ -1,0 +1,11 @@
+pymongo
+oauth2client
+gspread
+googletrans
+textblob
+fuzzywuzzy
+flask
+dnspython
+PyYAML
+python-dotenv
+python-Levenshtein

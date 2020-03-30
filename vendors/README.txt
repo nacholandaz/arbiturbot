@@ -1,0 +1,1 @@
+Here all vendors are defined, such as apis to connect to Gsheets and GPT

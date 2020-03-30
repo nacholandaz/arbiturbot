@@ -1,0 +1,9 @@
+initial_user_message:
+    type: 'text'
+    text: 'User generated text'
+    next_interaction: start
+
+start:
+    type: 'ai'
+    requires_user_response: 'true'
+    next_interaction: start

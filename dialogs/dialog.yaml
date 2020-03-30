@@ -1,0 +1,22 @@
+initial_user_message:
+    type: 'text'
+    text: 'User generated text'
+    next_interaction: start
+
+start:
+    type: 'text'
+    text: 'Bienvenid@!'
+    requires_user_response: 'false'
+    next_interaction: 'what_name'
+
+what_name:
+    type: 'text'
+    text: 'Cuál es tu nombre?'
+    requires_user_response: 'true'
+    next_interaction: 'alert_conversation'
+    save_answer_context: 'user_name'
+
+alert_conversation:
+    type: 'new_conversation_alert'
+    finishes_conversation: 'true'
+
