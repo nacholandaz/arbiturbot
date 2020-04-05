@@ -6,7 +6,7 @@ import os
 translator = Translator()
 
 def get(input_text):
-    url_gpt = os.environ['URL_GPT']
+    url_gpt = os.getenv('GPT_URL')
     content = {"context":input_text,"model_size":"gpt","top_p":0.9,"temperature":1,"max_time":1}
     return requests.post(url_gpt, data=json.dumps(content)).json()['sentences'][0]['value']
 

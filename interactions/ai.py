@@ -1,10 +1,10 @@
 from vendors import gpt
-import send
+from vendors import chat_api
 
-def logic(interaction, message): 
+def logic(interaction, message):
     gpt_answer = gpt.answer(message['text'])
-    send.reply(gpt_answer, message)
+    chat_api.reply(gpt_answer, message)
     return True
 
-def get_next_interaction(interaction, message): 
+def get_next_interaction(interaction, message):
     return interaction['next_interaction']

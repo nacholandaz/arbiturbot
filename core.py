@@ -4,14 +4,15 @@ from datetime import datetime
 import conversation
 import interaction
 import dialog
+import user
 
 def recieve_message(message):
     user_id = message.get('user_id')
-    if conversation.find_user(message) is None: create_conversation(message)
+    if user.get(user_id) is None: user.create(user_id)
+    if conversation.find(message) is None: conversation.create(message)
     move_conversation(message)
     return True
 
-def create_conversation(message): conversation.create(message)
 
 def save_context(last_interaction, message, user_id):
     print(message)
@@ -28,14 +29,14 @@ def move_conversation(message):
     print(last_message)
     last_interaction_name = last_message.get('interaction_name')
     print(last_interaction_name)
-    last_interaction = dialog.get_interaction(last_interaction_name)
+    last_interaction = dialog.get_interaction(last_interaction_name, user_id)
     if 'save_answer_context' in last_interaction:
         save_context(last_interaction, message, user_id)
 
     # Next interaction action
     next_interaction_name = interaction.get_next_interaction_name(last_interaction, message)
     print(next_interaction_name)
-    next_interaction = dialog.get_interaction(next_interaction_name)
+    next_interaction = dialog.get_interaction(next_interaction_name, user_id)
     interaction.run_interaction(next_interaction, message)
     conversation.update(next_interaction, next_interaction_name, message)
     if 'requires_user_response' in next_interaction:

@@ -9,3 +9,4 @@ dnspython
 PyYAML
 python-dotenv
 python-Levenshtein
+python-dotenv

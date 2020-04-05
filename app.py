@@ -1,9 +1,10 @@
 # This is the message handler from the server
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
+from dotenv import load_dotenv
 import core
 import os
-
+load_dotenv()
 
 
 app = Flask(__name__)
@@ -25,8 +26,7 @@ def index():
     message = build_message(user_id, text)
     print(message)
     # TODO(ricalanis): Remove this when we go production
-    if user_id == os.environ['TESTING_USER'] and author!= os.environ['OWNER_USER']:
-        core.recieve_message(message)
+    core.recieve_message(message)
     return jsonify({'success': 'true'})
 
 @app.route('/send_message', methods=['POST'])

@@ -6,7 +6,7 @@ scope = ['https://spreadsheets.google.com/feeds']
 creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
 client = gspread.authorize(creds)
 
-spread_url = os.environ['SPREAD_URL']
+spread_url = os.getenv('SPREAD_URL')
 
 KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 

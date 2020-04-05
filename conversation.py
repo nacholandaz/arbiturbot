@@ -4,7 +4,9 @@ from datetime import datetime
 from operator import itemgetter
 import os
 
-client = MongoClient(os.environ['MONGO_URL'])
+import user
+
+client = MongoClient(os.getenv('MONGO_URL'))
 conversations = client.bot.conversations
 
 def create(message):
@@ -22,6 +24,7 @@ def create(message):
                 'interaction_name': 'initial_user_message',
             }
         ],
+        'threads': [],
         'context': {}
     }
     return conversations.insert_one(conversation)
@@ -37,23 +40,29 @@ def update(interaction, interaction_name, message):
                 'interaction_name': interaction_name,
     }
     conversations.update({'user_id': user_id}, {'$push': {'messages': new_message}})
+    return True
 
-def find_user(user_id):
+def find(user_id):
     try:
-        users = [conversation['user_id'] for conversation in list(conversations.find({'user_id': user_id}))][0]
+        conversation = [conversation['user_id'] for conversation in list(conversations.find({'user_id': user_id}))][0]
     except:
-        users = None
-    return users
+        conversation = None
+    return conversation
 
 def context(user_id):
     try:
         context = [conversation['context'] for conversation in list(conversations.find({'user_id': user_id}))][0]
+        context.update(user.get(user_id))
     except:
-        context = None
+        context.update(user.get(user_id))
     return context
 
 def update_context(user_id, field, text):
-    conversations.update({'user_id': user_id}, {'$set': {'context.'+field: text}})
+    user_data = user.get(user_id)
+    if field in user_data:
+        user.update(field, text)
+    else:
+        conversations.update({'user_id': user_id}, {'$set': {'context.'+field: text}})
     return True
 
 def find_last_message(user_id):

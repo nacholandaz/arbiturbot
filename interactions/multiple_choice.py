@@ -1,9 +1,9 @@
-import send
+from vendors import chat_api
 
 from fuzzywuzzy import process
 
 def logic(interaction, message):
-    send.reply(interaction['text'], message)
+    chat_api.reply(interaction['text'], message)
     return True
 
 def get_next_interaction(interaction, message):
