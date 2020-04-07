@@ -8,7 +8,9 @@ import user
 
 def recieve_message(message):
     user_id = message.get('user_id')
-    if user.get(user_id) is None: user.create(user_id)
+    print(user.get(user_id))
+    if user.get(user_id) is None:
+        user.create(user_id)
     if conversation.find(message) is None: conversation.create(message)
     move_conversation(message)
     return True

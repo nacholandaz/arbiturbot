@@ -1,10 +1,11 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 # This is the message handler from the server
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
-from dotenv import load_dotenv
 import core
 import os
-load_dotenv()
 
 
 app = Flask(__name__)
@@ -26,7 +27,8 @@ def index():
     message = build_message(user_id, text)
     print(message)
     # TODO(ricalanis): Remove this when we go production
-    core.recieve_message(message)
+    if os.getenv('ARBITRUR_PHONE') not in author:
+        core.recieve_message(message)
     return jsonify({'success': 'true'})
 
 @app.route('/send_message', methods=['POST'])
@@ -40,4 +42,4 @@ def send_message():
     return jsonify({'success': 'true'})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)

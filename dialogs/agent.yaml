@@ -6,4 +6,10 @@ initial_user_message:
 start:
     type: 'ai'
     requires_user_response: 'true'
+    next_interaction: want_more
+
+want_more:
+    type: 'text'
+    text: 'Ponme algo mas si quieres saberlo'
     next_interaction: start
+    requires_user_response: 'true'

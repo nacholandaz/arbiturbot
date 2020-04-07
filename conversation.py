@@ -6,7 +6,7 @@ import os
 
 import user
 
-client = MongoClient(os.getenv('MONGO_URL'))
+client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
 conversations = client.bot.conversations
 
 def create(message):
@@ -51,16 +51,16 @@ def find(user_id):
 
 def context(user_id):
     try:
-        context = [conversation['context'] for conversation in list(conversations.find({'user_id': user_id}))][0]
-        context.update(user.get(user_id))
+        context_data = [conversation['context'] for conversation in list(conversations.find({'user_id': user_id}))][0]
+        context_data.update(user.get(user_id))
     except:
-        context.update(user.get(user_id))
-    return context
+        context_data=user.get(user_id)
+    return context_data
 
 def update_context(user_id, field, text):
     user_data = user.get(user_id)
     if field in user_data:
-        user.update(field, text)
+        user.update(user_id, {field: text} )
     else:
         conversations.update({'user_id': user_id}, {'$set': {'context.'+field: text}})
     return True
@@ -81,3 +81,8 @@ def is_finished(user_id):
 
 def set_finished(user_id):
     conversations.update({'user_id': user_id}, {'$set': {'finished': 'true'}})
+
+def get_printable_conversation(user_id):
+    user_conversation = list(conversations.find({'user_id': user_id}))[0]
+    messages = ['- ' + message['message']['text'] for message in user_conversation['messages']]
+    return '\n'.join(list(set(messages)))

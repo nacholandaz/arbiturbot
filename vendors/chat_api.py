@@ -28,7 +28,7 @@ def reply(reply_text, message):
         'body': reply_text,
         'chatId': user_id
     }
-    requests.post(f'https://eu87.chat-api.com/instance99459/sendMessage?token={CHAT_TOKEN}', data=meta_chat).json()
+    r = requests.post(f'https://eu87.chat-api.com/instance99459/sendMessage?token={CHAT_TOKEN}', data=meta_chat).json()
     return True
 
 def set_webhook(webhook_url):
@@ -46,7 +46,7 @@ def get_messages():
 
 def get_chat_user_name(user_id):
     try:
-        name =  [chat for chat in chats()['messages'] if author['chatId'] == user_id][0].get('senderName')
+        name =  [chat for chat in get_messages()['messages'] if chat['chatId'] == user_id][0].get('senderName')
     except:
         name = ''
     return name

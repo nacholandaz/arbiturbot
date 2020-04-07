@@ -13,10 +13,15 @@ what_name:
     type: 'text'
     text: 'Cuál es tu nombre?'
     requires_user_response: 'true'
-    next_interaction: 'alert_conversation'
-    save_answer_context: 'user_name'
+    next_interaction: 'finish_conversation'
+    save_answer_context: 'name'
+
+finish_conversation:
+    type: 'text'
+    text: Ok, dame un segundo...'
+    next_interaction: alert_conversation
+    requires_user_response: 'false'
 
 alert_conversation:
     type: 'new_conversation_alert'
     finishes_conversation: 'true'
-

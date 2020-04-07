@@ -6,8 +6,10 @@ import os
 
 from vendors import chat_api
 
-client = MongoClient(os.getenv('MONGO_URL'))
+client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
 users = client.bot.users
+
+print(os.getenv('ARBITRUR_MONGO_URL'))
 
 def get(id_value, id_type = 'id'):
     try:
@@ -34,7 +36,7 @@ def fetch_user(user_id):
     uuid = 'inbound_' + phone[-5:]
     return name, uuid, phone
 
-def create(user_id, user_data = {}):
+def create(user_id, user_data = {}, user_source = 'inbound'):
     user_type = get_user_type(user_id)
 
     if len(user_data.keys())>0:
@@ -47,6 +49,7 @@ def create(user_id, user_data = {}):
 
     user = {
         'id': user_id,
+        'source': user_source,
         'type': user_type,
         'name': name,
         'uuid': uuid,
@@ -58,7 +61,11 @@ def create(user_id, user_data = {}):
 
 def update(user_id, user_data):
     # user_data = {field:value, field2:value2 ...}
-    users.update({'user_id': user_id}, {'$set': user_data})
+    users.find_one_and_update(
+        {"id": user_id},
+        {"$set": user_data},
+        upsert=True
+    )
     return True
 
 def agents(): return {
@@ -76,5 +83,5 @@ def get_user_type(user_id):
 
 def phone_to_id(phone):
     phone = phone.replace(' ', '').replace('+', '')
-    if len(phone) == 10: return '52' + phone + '@c.us'
+    if len(phone) == 10: return '521' + phone + '@c.us'
     return phone + '@c.us'
