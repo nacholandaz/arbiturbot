@@ -35,11 +35,12 @@ def create(message, user_type = 'user', message_type = 'user_utterance', interac
 def update(interaction, interaction_name, message, user_type = 'bot', message_type = 'bot_response'):
     user_id = message.get('user_id')
     text = message.get('text')
+    created_at = message.get('created_at')
     new_message = {
                 'sender': user_type,
                 'message': message,
                 'type': message_type,
-                'created_at': datetime.now(),
+                'created_at':created_at,
                 'interaction_name': interaction_name,
     }
 
@@ -110,5 +111,4 @@ def get_user_messages(user_id):
     return list(set(messages))
 
 def get_printable_conversation(user_id):
-
     return '\n'.join(["- " + message for message in get_user_messages(user_id)])

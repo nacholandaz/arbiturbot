@@ -55,7 +55,7 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
         'uuid': uuid,
         'phone': phone,
         'created_at': datetime.now(),
-        'owners': []
+        'owners': [],
     }
     return users.insert_one(user)
 
@@ -85,3 +85,6 @@ def phone_to_id(phone):
     phone = phone.replace(' ', '').replace('+', '')
     if len(phone) == 10: return '521' + phone + '@c.us'
     return phone + '@c.us'
+
+def id_to_phone(user_id):
+    return user_id.split('@')[0]
