@@ -6,6 +6,8 @@ from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 import core
 import os
+import user
+import conversation
 
 
 app = Flask(__name__)
@@ -26,19 +28,13 @@ def index():
     author = data.get('author')
     message = build_message(user_id, text)
     print(message)
+    RECIEVER_ID = user.phone_to_id(os.getenv('ARBITRUR_PHONE'))
+    if user.get(user_id) is None: user.create(user_id)
+    if conversation.find(message) is None: conversation.create(message)
+    conversation.update_canonical_conversation(user_id, RECIEVER_ID, text, 'user')
     # TODO(ricalanis): Remove this when we go production
     if os.getenv('ARBITRUR_PHONE') not in author:
         core.recieve_message(message)
-    return jsonify({'success': 'true'})
-
-@app.route('/send_message', methods=['POST'])
-def send_message():
-    phone = request.get_json().get('phone')
-    user_id = str(phone) + '@c.us'
-    user_id = data.get('chatId')
-    text = 'Bot starting conversation message'
-    message = build_message(user_id, text)
-    core.recieve_message(message)
     return jsonify({'success': 'true'})
 
 if __name__ == '__main__':

@@ -2,8 +2,11 @@
 import requests
 import time
 import os
+import conversation
+import user
 
 CHAT_TOKEN = os.getenv('CHAT_TOKEN')
+
 
 def natural_reply_time(reply_text):
     #http://www.iphonehacks.com/2010/03/iphone-user-types-incredible-83-wpm-attributes-speed-to-capacitive-touch-screen.html
@@ -29,6 +32,10 @@ def reply(reply_text, message):
         'chatId': user_id
     }
     r = requests.post(f'https://eu87.chat-api.com/instance99459/sendMessage?token={CHAT_TOKEN}', data=meta_chat).json()
+
+    if user.get(user_id) and conversation.find(user_id):
+        SENDER_ID = user.phone_to_id(os.getenv('ARBITRUR_PHONE'))
+        conversation.update_canonical_conversation(SENDER_ID, user_id, reply_text, 'bot')
     return True
 
 def set_webhook(webhook_url):

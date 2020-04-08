@@ -9,38 +9,60 @@ import user
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
 conversations = client.bot.conversations
 
-def create(message):
+def create(message, user_type = 'user', message_type = 'user_utterance', interaction_name= 'initial_user_message'):
     user_id = message.get('user_id')
     text = message.get('text')
     created_at = message.get('created_at')
+    # Canonical Conversation is updated only at text recieved and sent.
+    # Messages are updated at bot interaction
     conversation = {
         'user_id': user_id,
         'messages': [
             {
-                'sender': 'user',
+                'sender': user_type,
                 'message': message,
-                'type': 'user_utterance',
+                'type': message_type,
                 'created_at': created_at,
-                'interaction_name': 'initial_user_message',
+                'interaction_name': interaction_name,
             }
         ],
+        'canonical_conversation': [],
         'threads': [],
         'context': {}
     }
     return conversations.insert_one(conversation)
 
-def update(interaction, interaction_name, message):
+def update(interaction, interaction_name, message, user_type = 'bot', message_type = 'bot_response'):
     user_id = message.get('user_id')
     text = message.get('text')
     new_message = {
-                'sender': 'bot',
+                'sender': user_type,
                 'message': message,
-                'type': 'bot_response',
+                'type': message_type,
                 'created_at': datetime.now(),
                 'interaction_name': interaction_name,
     }
+
     conversations.update({'user_id': user_id}, {'$push': {'messages': new_message}})
     return True
+
+def update_canonical_conversation(sender_id, reciever_id, text, sender_type):
+    new_canonical_message = {
+                'sender_type': sender_type,
+                'sender_id': sender_id,
+                'reciever_id': reciever_id,
+                'text': text,
+                'created_at': datetime.now(),
+    }
+
+    if sender_type == 'bot':
+        user_id = reciever_id
+    else:
+        user_id = sender_id
+
+    conversations.update({'user_id': sender_id}, {'$push': {'canonical_conversation': new_canonical_message}})
+    return True
+
 
 def find(user_id):
     try:
@@ -82,10 +104,11 @@ def is_finished(user_id):
 def set_finished(user_id):
     conversations.update({'user_id': user_id}, {'$set': {'finished': 'true'}})
 
-def get_messages(user_id):
+def get_user_messages(user_id):
     user_conversation = list(conversations.find({'user_id': user_id}))[0]
     messages = [message['message']['text'] for message in user_conversation['messages']]
     return list(set(messages))
 
 def get_printable_conversation(user_id):
+
     return '\n'.join(["- " + message for message in get_user_messages(user_id)])

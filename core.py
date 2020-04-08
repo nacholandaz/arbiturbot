@@ -5,13 +5,9 @@ import conversation
 import interaction
 import dialog
 import user
+import os
 
 def recieve_message(message):
-    user_id = message.get('user_id')
-    print(user.get(user_id))
-    if user.get(user_id) is None:
-        user.create(user_id)
-    if conversation.find(message) is None: conversation.create(message)
     move_conversation(message)
     return True
 
@@ -39,7 +35,7 @@ def move_conversation(message):
     next_interaction_name = interaction.get_next_interaction_name(last_interaction, message)
     print(next_interaction_name)
     next_interaction = dialog.get_interaction(next_interaction_name, user_id)
-    interaction = interaction.run_interaction(next_interaction, message)
+    interaction.run_interaction(next_interaction, message)
     conversation.update(next_interaction, next_interaction_name, message)
     if 'requires_user_response' in next_interaction:
         if next_interaction['requires_user_response'] == 'false': recieve_message(message)
