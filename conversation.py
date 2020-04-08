@@ -44,7 +44,7 @@ def update(interaction, interaction_name, message):
 
 def find(user_id):
     try:
-        conversation = [conversation['user_id'] for conversation in list(conversations.find({'user_id': user_id}))][0]
+        conversation = [conversation for conversation in list(conversations.find({'user_id': user_id}))][0]
     except:
         conversation = None
     return conversation
@@ -82,7 +82,10 @@ def is_finished(user_id):
 def set_finished(user_id):
     conversations.update({'user_id': user_id}, {'$set': {'finished': 'true'}})
 
-def get_printable_conversation(user_id):
+def get_messages(user_id):
     user_conversation = list(conversations.find({'user_id': user_id}))[0]
-    messages = ['- ' + message['message']['text'] for message in user_conversation['messages']]
-    return '\n'.join(list(set(messages)))
+    messages = [message['message']['text'] for message in user_conversation['messages']]
+    return list(set(messages))
+
+def get_printable_conversation(user_id):
+    return '\n'.join(["- " + message for message in get_user_messages(user_id)])
