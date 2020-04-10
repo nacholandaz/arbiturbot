@@ -4,12 +4,12 @@ initial_user_message:
     next_interaction: start
 
 start:
-    type: 'ai'
-    requires_user_response: 'true'
-    next_interaction: want_more
-
-want_more:
     type: 'text'
-    text: 'Ponme algo mas si quieres saberlo'
-    next_interaction: start
-    requires_user_response: 'true'
+    text: 'Hola ${user}'
+    requires_user_response: 'false'
+    next_interaction: 'bye'
+
+bye:
+    type: 'text'
+    text: 'Adios Alv'
+    finishes_conversation: 'true'

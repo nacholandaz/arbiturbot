@@ -5,6 +5,7 @@ from operator import itemgetter
 import os
 
 from vendors import chat_api
+import threads
 
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
 users = client.bot.users
@@ -18,9 +19,26 @@ def get(id_value, id_type = 'id'):
         user = None
     return user
 
+
+def find(owner=None, thread_label = None, thread_solved = None):
+    all_users = list(users.find({}))
+    if owner:
+        all_users = [ind_user for ind_user in all_users if owner in ind_user['owners']]
+    if thread_label:
+        all_users = [ind_user for ind_user in all_users for thread in ind_user['threads'] if thread_label == thread['label']]
+    if thread_solved:
+        all_users = [ind_user for ind_user in all_users for thread in ind_user['threads'] if thread_solved == thread['solved']]
+    return all_users
+
+
 def fetch_user_data(user_data):
     name = user_data.get('name')
     uuid = user_data.get('uuid')
+    if uuid is None:
+        day = str(datetime.now().day)
+        month = str(datetime.now().month)
+        hour = str(datetime.now().hour)
+        uuid = name[0:3].lower() + hour+ day+ month
     phone = user_data.get('phone')
     return name, uid, phone
 
@@ -56,6 +74,7 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
         'phone': phone,
         'created_at': datetime.now(),
         'owners': [],
+        'threads': [],
     }
     return users.insert_one(user)
 

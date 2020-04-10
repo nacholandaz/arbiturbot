@@ -27,7 +27,6 @@ def create(message, user_type = 'user', message_type = 'user_utterance', interac
             }
         ],
         'canonical_conversation': [],
-        'threads': [],
         'context': {}
     }
     return conversations.insert_one(conversation)
@@ -35,12 +34,12 @@ def create(message, user_type = 'user', message_type = 'user_utterance', interac
 def update(interaction, interaction_name, message, user_type = 'bot', message_type = 'bot_response'):
     user_id = message.get('user_id')
     text = message.get('text')
-    created_at = message.get('created_at')
+    # Dont use created_at from message for conversation, so that makes for harder last message search
     new_message = {
                 'sender': user_type,
                 'message': message,
                 'type': message_type,
-                'created_at':created_at,
+                'created_at':datetime.now(),
                 'interaction_name': interaction_name,
     }
 

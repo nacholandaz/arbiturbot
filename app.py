@@ -20,21 +20,35 @@ def build_message(user_id, text):
     }
     return message
 
+def hard_reset(message):
+    list(user.users.remove())
+    list(conversation.conversations.remove())
+    print('LOL RESET!', message)
+    return jsonify({'success': 'true'})
+
+@app.route('/')
+def index_route():
+    return jsonify({'greeting': 'welcome to the arbitrur bot'})
+
+
 @app.route('/messages', methods=['POST'])
-def index():
+def messages_route():
     data = request.get_json().get('messages')[0]
-    user_id = data.get('chatId')
     text = data.get('body')
-    author = data.get('author')
+    user_id = data.get('author')
+    print(data)
+    if os.getenv('ARBITRUR_PHONE') in user_id: return jsonify({'success': 'true'})
     message = build_message(user_id, text)
     print(message)
+
+    if message['text'] == 'KABOOM!':
+        return hard_reset(message)
+
     RECIEVER_ID = user.phone_to_id(os.getenv('ARBITRUR_PHONE'))
     if user.get(user_id) is None: user.create(user_id)
     if conversation.find(message) is None: conversation.create(message)
     conversation.update_canonical_conversation(user_id, RECIEVER_ID, text, 'user')
-    # TODO(ricalanis): Remove this when we go production
-    if os.getenv('ARBITRUR_PHONE') not in author:
-        core.recieve_message(message)
+    core.recieve_message(message)
     return jsonify({'success': 'true'})
 
 if __name__ == '__main__':

@@ -38,7 +38,8 @@ def move_conversation(message):
     interaction.run_interaction(next_interaction, message)
     conversation.update(next_interaction, next_interaction_name, message)
     if 'requires_user_response' in next_interaction:
-        if next_interaction['requires_user_response'] == 'false': recieve_message(message)
+        if next_interaction['requires_user_response'] == 'false':
+            recieve_message(message)
     if 'finishes_conversation' in next_interaction:
         if next_interaction['finishes_conversation'] == 'true':
             conversation.set_finished(user_id)
