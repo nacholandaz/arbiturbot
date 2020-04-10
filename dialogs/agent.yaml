@@ -5,7 +5,7 @@ initial_user_message:
 
 start:
     type: 'text'
-    text: 'Hola ${user}'
+    text: 'Hola ${name}'
     requires_user_response: 'false'
     next_interaction: 'bye'
 

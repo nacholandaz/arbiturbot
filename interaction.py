@@ -19,6 +19,8 @@ def get_next_interaction_name(interaction, message):
 
 def run_interaction(interaction, message):
     interaction_type = interaction.get('type')
+    if 'text' in interaction:
+        interaction = get_values_from_context(interaction, message)
     logic_function = {
         'text': text.logic,
         'multiple_choice': multiple_choice.logic,
@@ -30,6 +32,7 @@ def run_interaction(interaction, message):
 
 def get_values_from_context(interaction, message):
     context = conversation.context(message['user_id'])
+    print(context)
     for key in context:
         key_store = '${' + key + '}'
         if key_store in interaction['text']:
