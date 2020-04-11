@@ -10,3 +10,5 @@ PyYAML
 python-dotenv
 python-Levenshtein
 python-dotenv
+phone_iso3166
+emoji-country-flag

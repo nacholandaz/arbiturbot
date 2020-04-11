@@ -111,3 +111,9 @@ def get_user_messages(user_id):
 
 def get_printable_conversation(user_id):
     return '\n'.join(["- " + message for message in get_user_messages(user_id)])
+
+
+def get_last_canonical_message_id(user_id):
+    user_conversation = list(conversations.find({'user_id': user_id}))[0]
+    messages = user_conversation['canonical_conversation']
+    return len(messages)-1

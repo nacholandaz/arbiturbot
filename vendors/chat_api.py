@@ -10,7 +10,7 @@ CHAT_TOKEN = os.getenv('CHAT_TOKEN')
 
 def natural_reply_time(reply_text):
     #http://www.iphonehacks.com/2010/03/iphone-user-types-incredible-83-wpm-attributes-speed-to-capacitive-touch-screen.html
-    return time.sleep(len(reply_text.split(' ')))
+    return time.sleep(int(float(len(reply_text.split(' ')))//10.0))
 
 def mark_as_read_and_wait(reply_text, message):
     user_id = message['user_id']

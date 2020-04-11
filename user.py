@@ -3,9 +3,10 @@ from pymongo import MongoClient
 from datetime import datetime
 from operator import itemgetter
 import os
+from geo import get_country_name_and_flag
 
 from vendors import chat_api
-import threads
+import thread
 
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
 users = client.bot.users
@@ -40,7 +41,7 @@ def fetch_user_data(user_data):
         hour = str(datetime.now().hour)
         uuid = name[0:3].lower() + hour+ day+ month
     phone = user_data.get('phone')
-    return name, uid, phone
+    return name, uuid, phone
 
 def fetch_agent(user_id):
     name = get_agent(user_id).get('name')
@@ -65,6 +66,7 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
         else:
             name, uuid, phone = fetch_user(user_id)
 
+    if phone: country = get_country_name_and_flag(phone)
     user = {
         'id': user_id,
         'source': user_source,
@@ -72,14 +74,22 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
         'name': name,
         'uuid': uuid,
         'phone': phone,
+        'country': country,
         'created_at': datetime.now(),
         'owners': [],
         'threads': [],
     }
+
+    if 'owner' in user_data:
+        user['owners'].append(user_data.get('owner'))
+
     return users.insert_one(user)
 
 def update(user_id, user_data):
-    # user_data = {field:value, field2:value2 ...}
+    # user_data = {field:value, field2:value2 ...z
+
+    if phone in user_data: user_data['country'] = phone_country(phone)
+
     users.find_one_and_update(
         {"id": user_id},
         {"$set": user_data},

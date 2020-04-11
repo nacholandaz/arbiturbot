@@ -6,6 +6,7 @@ import interaction
 import dialog
 import user
 import os
+import thread
 
 def recieve_message(message):
     move_conversation(message)
@@ -43,4 +44,8 @@ def move_conversation(message):
     if 'finishes_conversation' in next_interaction:
         if next_interaction['finishes_conversation'] == 'true':
             conversation.set_finished(user_id)
+    if 'create_thread' in next_interaction:
+        if next_interaction['create_thread'] == 'true':
+            message_id = conversation.get_last_canonical_message_id(user_id)
+            thread.create(user_id, message_id)
     return True

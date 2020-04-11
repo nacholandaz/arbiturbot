@@ -5,11 +5,60 @@ initial_user_message:
 
 start:
     type: 'text'
-    text: 'Hola ${name}'
+    text: 'Hola ${name} 🙋‍♀'
     requires_user_response: 'false'
-    next_interaction: 'bye'
+    next_interaction: 'presentation'
 
-bye:
+presentation:
     type: 'text'
-    text: 'Adios Alv'
+    text: 'Soy Arbi, estoy aquí para lo que necesites!'
+    requires_user_response: 'false'
+    next_interaction: 'agent_options'
+
+agent_options:
+    type: 'multiple_choice'
+    text: "Esta es la lista de comandos disponibles para empezar a trabajar 👍\n1️⃣Teclea el número 1 para ver tus conversaciones pendientes\n2️⃣Teclea el número 2 para ver tu lista de usuarios\n3️⃣Teclea el número 3 para registrar un nuevo usuario\n❓Escribe “ayuda” para más información, estoy a tus órdenes! 😀"
+    requires_user_response: 'true'
+    next_interaction: 'agent_options'
+    next_interaction: {
+        '1':  pending_users,
+        '2':  my_users,
+        '3':  register_user_question,
+        'ayuda': help,
+    }
+    next_interaction_failure: help
+
+register_user_question:
+    type: 'text'
+    text: "Ok! Para agregar usuarios, escribe el nombre completo y entre paréntesis el número de teléfono.\n\nEjemplo:\n*+u* Luis Miguel (81 1234 5678)"
+    save_answer_context: 'new_user_info'
+    requires_user_response: 'true'
+    next_interaction: pre_register_user
+
+#This converts the context 'new_user_info' to the different context data
+pre_register_user:
+    type: 'pre_register_user'
+    requires_user_response: 'false'
+    next_interaction: confirm_user
+
+confirm_user:
+    type: 'multiple_choice'
+    text: "Ok! Entonces el nuevo usuario es:\n\n👤${new_user_info_name}\n☎️${new_user_info_phone}\n${new_user_info_country}\n\n¿Es correcto?\n1️⃣Sí\n2️⃣No"
+    requires_user_response: 'true'
+    next_interaction: {
+        '1':  confirm_user_yes,
+        '2':  register_user_question,
+    }
+    next_interaction_failure: confirm_user
+
+confirm_user_yes:
+    type: 'register_user'
+    requires_user_response: 'false'
+    next_interaction: close_convo
+
+
+close_convo:
+    type: 'text'
+    text: 'Cerrando convo'
     finishes_conversation: 'true'
+

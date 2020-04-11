@@ -25,3 +25,5 @@ finish_conversation:
 alert_conversation:
     type: 'new_conversation_alert'
     finishes_conversation: 'true'
+    create_thread: 'true'
+
