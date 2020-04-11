@@ -33,7 +33,8 @@ def reply(reply_text, message):
     }
     r = requests.post(f'https://eu87.chat-api.com/instance99459/sendMessage?token={CHAT_TOKEN}', data=meta_chat).json()
 
-    if user.get(user_id) and conversation.find(user_id):
+    if user.get(user_id):
+        if conversation.find(user_id) is None: conversation.create_delegated(message)
         SENDER_ID = user.phone_to_id(os.getenv('ARBITRUR_PHONE'))
         conversation.update_canonical_conversation(SENDER_ID, user_id, reply_text, 'bot')
     return True

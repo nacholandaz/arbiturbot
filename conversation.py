@@ -31,6 +31,13 @@ def create(message, user_type = 'user', message_type = 'user_utterance', interac
     }
     return conversations.insert_one(conversation)
 
+def create_delegated(message):
+    user_id = message['user_id']
+    create(message, user_type= 'bot', message_type= 'bot_utterance', interaction_name = 'sent_message')
+    set_finished(user_id)
+    return True
+
+
 def update(interaction, interaction_name, message, user_type = 'bot', message_type = 'bot_response'):
     user_id = message.get('user_id')
     text = message.get('text')
@@ -60,7 +67,7 @@ def update_canonical_conversation(sender_id, reciever_id, text, sender_type):
     else:
         user_id = sender_id
 
-    conversations.update({'user_id': sender_id}, {'$push': {'canonical_conversation': new_canonical_message}})
+    conversations.update({'user_id': user_id}, {'$push': {'canonical_conversation': new_canonical_message}})
     return True
 
 
@@ -117,3 +124,8 @@ def get_last_canonical_message_id(user_id):
     user_conversation = list(conversations.find({'user_id': user_id}))[0]
     messages = user_conversation['canonical_conversation']
     return len(messages)-1
+
+def get_canonical_message(user_id, message_id):
+    user_conversation = list(conversations.find({'user_id': user_id}))[0]
+    messages = user_conversation['canonical_conversation']
+    return messages[message_id]

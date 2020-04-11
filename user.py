@@ -88,7 +88,7 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
 def update(user_id, user_data):
     # user_data = {field:value, field2:value2 ...z
 
-    if phone in user_data: user_data['country'] = phone_country(phone)
+    if 'phone' in user_data: user_data['country'] = phone_country(user_data['phone'])
 
     users.find_one_and_update(
         {"id": user_id},

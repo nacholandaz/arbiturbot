@@ -54,11 +54,52 @@ confirm_user:
 confirm_user_yes:
     type: 'register_user'
     requires_user_response: 'false'
-    next_interaction: close_convo
+    next_interaction: choose_options_confirm
 
-
-close_convo:
+choose_options_confirm:
     type: 'text'
-    text: 'Cerrando convo'
-    finishes_conversation: 'true'
+    text: "Elegiste 1"
+    requires_user_response: 'false'
+    next_interaction: describe_user_register
 
+describe_user_register:
+    type: 'text'
+    text: "Ok! Este usuario ya está en la base de datos:\nNuevo cliente: NO\nEstatus: Reporte abierto"
+    requires_user_response: 'false'
+    next_interaction: explain_arbirtur
+
+
+explain_arbirtur:
+    type: 'text'
+    text: "1️⃣Si quieres mandarle un mensaje al usuario, escríbe m=, seguido por el mensaje\n\nEjemplo:\nm= Hola, hablo por parte de lo que me preguntaste\n2️⃣De otra forma, escribe 'X'"
+    requires_user_response: 'false'
+    next_interaction: redirect_chat_interaction
+
+redirect_chat_interaction:
+    type: 'redirect_message'
+    requires_user_response: 'true'
+    quit_keyword: 'X'
+    next_interaction_when_exit: quit_conversation
+
+quit_conversation:
+    type: 'text'
+    text: '{Aqui va bloque de generar recordatorios}'
+    requires_user_response: 'false'
+    next_interaction: show_user_list_after_register
+
+show_user_list_after_register:
+    type: 'owned_users_threads'
+    text: 'Te recuerdo que tienes *conversaciones pendientes:*'
+    requires_user_response: 'false'
+    next_interaction: agent_options
+
+user_list:
+    type: 'owned_users_threads'
+    text: 'Tienes *conversaciones pendientes:*'
+    requires_user_response: 'false'
+    next_interaction: end_demo
+
+end_demo:
+    type: 'text'
+    text: 'Aqui termina el demo.'
+    finishes_conversation: 'true'

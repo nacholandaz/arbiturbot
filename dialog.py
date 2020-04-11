@@ -13,7 +13,9 @@ def dialog_by_user_type(user_id):
 
 def get_interaction(interaction_name, user_id):
     dialog = dialog_by_user_type(user_id)
-    return dialog.get(interaction_name)
+    interaction = dialog.get(interaction_name)
+    interaction['interaction_name'] = interaction_name
+    return interaction
 
 def next_interaction_name(interaction_name, user_id):
     interaction = get_interaction(interaction_name, user_id)

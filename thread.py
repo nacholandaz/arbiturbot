@@ -1,6 +1,7 @@
 from datetime import datetime
-
 import conversation
+
+from user import users
 
 def find_all(user_id=None, label = None, solved = None):
   if user_id:
@@ -17,14 +18,15 @@ def find_all(user_id=None, label = None, solved = None):
 
 def create(user_id, last_message_id, label = None, first_message_id = None):
   new_thread = {
-    'label': None,
-    'first_canonical_message_id':None,
+    'label': label,
+    'first_canonical_message_id':first_message_id,
     'last_canonical_message_id':last_message_id,
     'solved': False,
     'created_at': datetime.now(),
     'updated_at': datetime.now(),
   }
   users.update({'id': user_id}, {'$push': {'threads': new_thread}})
+  return True
 
 def get(user_id, thread_id):
   try:
@@ -42,3 +44,11 @@ def update(user_id, thread_id, field, value):
         upsert=True
     )
     return True
+
+def printable_label(label):
+    label_dict = {None: 'indefinido', 'sale': 'venta', 'report': 'repote'}
+    return label_dict.get(label)
+
+def printable_status(solved):
+    if True: 'resuelto'
+    return 'sin resolver'

@@ -1,6 +1,7 @@
 from phone_iso3166.country import phone_country
 import conversation
 import user
+import thread
 
 def logic(interaction, message):
     user_id = message['user_id']
@@ -23,6 +24,8 @@ def logic(interaction, message):
     }
 
     user.create(id_create_user, user_data, 'outbound')
+    thread.create(id_create_user, -1)
+    user.update(user_id, {'redirect_user': id_create_user})
     return True
 
 def get_next_interaction(interaction, message):
