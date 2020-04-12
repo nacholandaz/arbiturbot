@@ -20,20 +20,13 @@ def build_message(user_id, text):
     }
     return message
 
-def hard_reset(message):
+def hard_reset():
     list(user.users.remove())
     list(conversation.conversations.remove())
-    print('LOL RESET!', message)
-    return jsonify({'success': 'true'})
+    print('<< Conversations reset >>')
+    return True
 
-@app.route('/')
-def index_route():
-    return jsonify({'greeting': 'welcome to the arbitrur bot'})
-
-
-@app.route('/messages', methods=['POST'])
-def messages_route():
-    data = request.get_json().get('messages')[0]
+def respond(data):
     text = data.get('body')
     user_id = data.get('author')
     print(data)
@@ -42,13 +35,25 @@ def messages_route():
     print(message)
 
     if message['text'] == 'KABOOM!':
-        return hard_reset(message)
+        hard_reset(message)
+        return jsonify({'success': 'true'})
 
     RECIEVER_ID = user.phone_to_id(os.getenv('ARBITRUR_PHONE'))
     if user.get(user_id) is None: user.create(user_id)
     if conversation.find(message) is None: conversation.create(message)
     conversation.update_canonical_conversation(user_id, RECIEVER_ID, text, 'user')
     core.recieve_message(message)
+    return True
+
+
+@app.route('/')
+def index_route():
+    return jsonify({'greeting': 'welcome to the arbitrur bot'})
+
+@app.route('/messages', methods=['POST'])
+def messages_route():
+    data = request.get_json().get('messages')[0]
+    respond(data)
     return jsonify({'success': 'true'})
 
 if __name__ == '__main__':

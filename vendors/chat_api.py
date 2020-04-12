@@ -4,6 +4,7 @@ import time
 import os
 import conversation
 import user
+import cli
 
 CHAT_TOKEN = os.getenv('CHAT_TOKEN')
 
@@ -25,14 +26,15 @@ def mark_as_read_and_wait(reply_text, message):
 
 def reply(reply_text, message):
     mark_as_read_and_wait(reply_text, message)
-    print('Sending message:' + reply_text)
     user_id = message['user_id']
     meta_chat = {
         'body': reply_text,
         'chatId': user_id
     }
-    r = requests.post(f'https://eu87.chat-api.com/instance99459/sendMessage?token={CHAT_TOKEN}', data=meta_chat).json()
-
+    if cli.is_on == False:
+        r = requests.post(f'https://eu87.chat-api.com/instance99459/sendMessage?token={CHAT_TOKEN}', data=meta_chat).json()
+    else:
+        cli.puts_reply(meta_chat)
     if user.get(user_id):
         if conversation.find(user_id) is None: conversation.create_delegated(message)
         SENDER_ID = user.phone_to_id(os.getenv('ARBITRUR_PHONE'))

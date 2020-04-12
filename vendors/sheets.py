@@ -22,7 +22,6 @@ def get_headers():
 def update_headers(new_keys):
     current_headers = get_headers()
     new_keys = list(set(new_keys) - set(current_headers))
-    print(new_keys)
     sheet = client.open_by_url(spread_url)
     sheet.values_update(
         'Sheet1!' +KEYS[len(current_headers)]+'1',

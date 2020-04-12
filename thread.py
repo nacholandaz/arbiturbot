@@ -1,6 +1,5 @@
 from datetime import datetime
 import conversation
-
 from user import users
 
 def find_all(user_id=None, label = None, solved = None):

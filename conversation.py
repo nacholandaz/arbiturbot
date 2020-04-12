@@ -113,7 +113,7 @@ def set_finished(user_id):
 
 def get_user_messages(user_id):
     user_conversation = list(conversations.find({'user_id': user_id}))[0]
-    messages = [message['message']['text'] for message in user_conversation['messages']]
+    messages = [message['text'] for message in user_conversation['canonical_conversation'] if message['sender_type'] =='user']
     return list(set(messages))
 
 def get_printable_conversation(user_id):

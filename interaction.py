@@ -44,7 +44,6 @@ def run_interaction(interaction, message):
 
 def get_values_from_context(interaction, message):
     context = conversation.context(message['user_id'])
-    print(context)
     for key in context:
         key_store = '${' + key + '}'
         if key_store in interaction['text']:
