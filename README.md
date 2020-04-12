@@ -13,6 +13,10 @@ ARBITRUR_PHONE={Phone used to send messages from}
 ARBITRUR_MONGO_URL={Url from mongodb atlas to save data to}
 CHAT_TOKEN={chat-api token to connect to server}
 ```
+* run docker-compose build
+
+## Setup server
+
 * Run ngrok locally (https://ngrok.com/) using `ngrok http 5000`
 * Setup ngrok manually using a function of type, using a function like:
 ```python
@@ -23,8 +27,14 @@ def set_webhook():
     }
     return requests.post('https://api.chat-api.com/instance99459/webhook?token=(chat_api_token)', data=meta_chat).json()
 ```
-* run docker-compose build
-* run docker-compose (-d if daemon)
+* run docker-compose up (-d if daemon)
+
+## Run terminal client
+* run docker-compose run web python3 cli.py
+
+This will run the terminal client. It will ask if the database should be clear after using the client.
+Keep in mind that if you use the configuration given that points to atlas, this could delete all information
+stored.
 
 ### Example objects on database
 
