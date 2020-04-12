@@ -1,3 +1,7 @@
+# ARBITRURBOT
+
+A service oriented intelligent engine to provide a chat interface to costumer management.
+
 ## Setup
 
 * Install docker and docker-compose
