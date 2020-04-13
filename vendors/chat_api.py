@@ -31,7 +31,8 @@ def reply(reply_text, message):
         'body': reply_text,
         'chatId': user_id
     }
-    if cli.is_on == False:
+    if cli.is_on() == False:
+        print(f'Sending text {reply_text} to chat api...')
         r = requests.post(f'https://eu87.chat-api.com/instance99459/sendMessage?token={CHAT_TOKEN}', data=meta_chat).json()
     else:
         cli.puts_reply(meta_chat)

@@ -24,9 +24,9 @@ agent_options:
         '1':  pending_users,
         '2':  my_users,
         '3':  register_user_question,
-        'ayuda': help,
+        'ayuda': end_demo,
     }
-    next_interaction_failure: help
+    next_interaction_failure: end_demo
 
 register_user_question:
     type: 'text'

@@ -7,7 +7,8 @@ from datetime import datetime
 
 args = Args()
 
-def is_on(): return bool(os.getenv('CLI_ON')) == True
+def is_on():
+  return int(os.getenv('CLI_ON')) == 1
 
 def set_mode(args):
   if '--user' in args:
@@ -42,7 +43,7 @@ def hard_reset():
 if __name__ == '__main__':
     from app import respond
     # Standard non-empty input
-    os.environ['CLI_ON'] = 'True'
+    os.environ['CLI_ON'] = "1"
     mode = set_mode(args)
     user = get_user(mode)
     os.environ['CLI_USER'] = user

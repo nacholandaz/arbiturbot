@@ -14,6 +14,7 @@ def recieve_message(message):
 
 
 def save_context(last_interaction, message, user_id):
+    print(message)
     field = last_interaction.get('save_answer_context')
     text = message['text']
     conversation.update_context(user_id, field, text)
@@ -24,13 +25,16 @@ def move_conversation(message):
     user_id = message.get('user_id')
     if conversation.is_finished(user_id): return True
     last_message = conversation.find_last_message(user_id)
+    print(last_message)
     last_interaction_name = last_message.get('interaction_name')
+    print(last_interaction_name)
     last_interaction = dialog.get_interaction(last_interaction_name, user_id)
     if 'save_answer_context' in last_interaction:
         save_context(last_interaction, message, user_id)
 
     # Next interaction action
     next_interaction_name = interaction.get_next_interaction_name(last_interaction, message)
+    print(next_interaction_name)
     next_interaction = dialog.get_interaction(next_interaction_name, user_id)
     interaction.run_interaction(next_interaction, message)
     conversation.update(next_interaction, next_interaction_name, message)

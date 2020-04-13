@@ -8,7 +8,8 @@ from geo import get_country_name_and_flag
 from vendors import chat_api
 
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
-users = client.bot.users\
+users = client.bot.users
+print(os.getenv('ARBITRUR_MONGO_URL'))
 
 def get(id_value, id_type = 'id'):
     try:
