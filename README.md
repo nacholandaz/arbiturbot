@@ -125,3 +125,15 @@ stored.
    'created_at': datetime.datetime(2020, 4, 12, 16, 58, 25, 629000),
    'updated_at': datetime.datetime(2020, 4, 12, 16, 58, 25, 629000)}]}
 ```
+
+### Example Notification Object
+```python
+[{'_id': ObjectId('5e93e56ccf39f61f8b2bf0e9'),
+  'agent_id': '5218117649489@c.us',
+  'user_id': '5218186861502@c.us',
+  'thread_id': 0,
+  'created_at': datetime.datetime(2020, 4, 12, 23, 7, 8, 639000),
+  'last_notification_at': datetime.datetime(2020, 4, 13, 4, 18, 54, 449000),
+  'type': 'interval',
+  'settings': {'minutes': 30}}]
+```
