@@ -8,6 +8,7 @@ start:
     text: 'Bienvenid@!'
     requires_user_response: 'false'
     next_interaction: 'what_name'
+    save_intent: 'true'
 
 what_name:
     type: 'text'

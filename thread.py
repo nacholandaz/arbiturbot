@@ -15,12 +15,15 @@ def find_all(user_id=None, label = None, solved = None):
   return solved
 
 
-def create(user_id, last_message_id, label = None, first_message_id = None):
+def create(user_id, last_message_id, label = None, first_message_id = None, label_set_by = 'arbi'):
   new_thread = {
     'label': label,
+    'label_set_by': label_set_by,
+    'label_set_at': datetime.now(),
     'first_canonical_message_id':first_message_id,
     'last_canonical_message_id':last_message_id,
     'solved': False,
+    'closed_at': None,
     'created_at': datetime.now(),
     'updated_at': datetime.now(),
   }
