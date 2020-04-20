@@ -10,7 +10,7 @@ from vendors import chat_api
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
 notifications = client.bot.notifications
 
-def create(agent_id, user_id, thread_id, notification_type = 'interval', settings = None):
+def create(agent_id, user_id, thread_id, notification_type = 'interval', notification_nature = 'timed', settings = None):
     if settings == None:
       if notification_type == 'interval':
         settings = {
@@ -29,6 +29,7 @@ def create(agent_id, user_id, thread_id, notification_type = 'interval', setting
         'created_at': datetime.now(),
         'last_notification_at': datetime.now(),
         'type': notification_type,
+        'nature': notification_nature, # urgent, pending, timed
         'settings': settings,
     }
 

@@ -19,7 +19,7 @@ what_name:
 
 finish_conversation:
     type: 'text'
-    text: Ok, dame un segundo...'
+    text: 'Gracias, estamos notificando un Representante por favor espera un momento'
     next_interaction: alert_conversation
     requires_user_response: 'false'
 
