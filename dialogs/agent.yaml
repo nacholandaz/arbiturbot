@@ -15,91 +15,102 @@ presentation:
     requires_user_response: 'false'
     next_interaction: 'agent_options'
 
-agent_options:
-    type: 'multiple_choice'
-    text: "Esta es la lista de comandos disponibles para empezar a trabajar 👍\n1️⃣Teclea el número 1 para ver tus conversaciones pendientes\n2️⃣Teclea el número 2 para ver tu lista de usuarios\n3️⃣Teclea el número 3 para registrar un nuevo usuario\n❓Escribe “ayuda” para más información, estoy a tus órdenes! 😀"
+general_interface:
+    type: 'conversational_interface'
+    text: "Actualmente no te encuentras hablando con nadie"
     requires_user_response: 'true'
-    next_interaction: 'agent_options'
-    next_interaction: {
-        '1':  pending_users,
-        '2':  my_users,
-        '3':  register_user_question,
-        'ayuda': end_demo,
+    available_commands: {
+        '+u':  add_user,
+        'u':  move_to_user,
+        'ls': list_users, #TBD
+        'c':  list_cases, #TBD
+        '?': get_help,
     }
-    next_interaction_failure: end_demo
+    next_interaction_failure: error_command
+    save_field_context:
+        field: conversational_level
+        value: general
 
-register_user_question:
+get_help:
     type: 'text'
-    text: "Ok! Para agregar usuarios, escribe el nombre completo y entre paréntesis el número de teléfono.\n\nEjemplo:\n*+u* Luis Miguel (81 1234 5678)"
-    save_answer_context: 'new_user_info'
+    text: "+u - loop de generar usuario - flow con retro\nu - moverse a un usuario - setup \nls- listar usuarios - flow sin retro\nc - listar casos - flow sin retro\n? - Obtener ayuda  - flow sin retro"
+    requires_user_response: 'false'
+    next_interaction: general_interface
+
+user_interface:
+    type: 'conversational_interface'
+    text: "Actualmente te encuentras hablando con ${redirect_user} (${redirect_phone})"
     requires_user_response: 'true'
-    next_interaction: pre_register_user
+    available_commands: {
+        '+u': add_user,
+        'u': move_to_user,
+        'm': message_user,
+        'ls': list_users, #TBD
+        'c': list_cases, #TBD
+        '?': get_help_user,
+        'x': exit_level,
+        '!': complete_case, #TBD
+        'r.': start_report, #TBD
+        'r!': close_report, #TBD
+        'v.': start_sale, #TBD
+        'v!': complete_sale, #TBD
+    }
+    next_interaction_failure: error_command
+    save_field_context:
+        field: conversational_level
+        value: user
 
 #This converts the context 'new_user_info' to the different context data
-pre_register_user:
+add_user:
     type: 'pre_register_user'
     requires_user_response: 'false'
-    next_interaction: confirm_user
+    next_interaction: register_user
 
-confirm_user:
-    type: 'multiple_choice'
-    text: "Ok! Entonces el nuevo usuario es:\n\n👤${new_user_info_name}\n☎️${new_user_info_phone}\n${new_user_info_country}\n\n¿Es correcto?\n1️⃣Sí\n2️⃣No"
-    requires_user_response: 'true'
-    next_interaction: {
-        '1':  confirm_user_yes,
-        '2':  register_user_question,
-    }
-    next_interaction_failure: confirm_user
-
-confirm_user_yes:
+register_user:
     type: 'register_user'
     requires_user_response: 'false'
-    next_interaction: choose_options_confirm
+    next_interaction: conversation_start
 
-choose_options_confirm:
+conversation_start:
     type: 'text'
-    text: "Elegiste 1"
+    text: "¡Listo! Haz registrado a ${new_user_info_name}(${new_user_info_phone})"
     requires_user_response: 'false'
-    next_interaction: describe_user_register
+    next_interaction: 'presentation'
 
-describe_user_register:
+presentation:
     type: 'text'
-    text: "Ok! Este usuario ya está en la base de datos:\nNuevo cliente: NO\nEstatus: Reporte abierto"
-    requires_user_response: 'false'
-    next_interaction: explain_arbirtur
-
-
-explain_arbirtur:
-    type: 'text'
-    text: "1️⃣Si quieres mandarle un mensaje al usuario, escríbe m=, seguido por el mensaje\n\nEjemplo:\nm= Hola, hablo por parte de lo que me preguntaste\n2️⃣De otra forma, escribe 'X'"
-    requires_user_response: 'false'
-    next_interaction: redirect_chat_interaction
-
-redirect_chat_interaction:
-    type: 'redirect_message'
+    text: "Escribe tu primer mensaje (ejemplo: m hola!)"
     requires_user_response: 'true'
-    quit_keyword: 'X'
-    next_interaction_when_exit: quit_conversation
+    next_interaction: message_user
 
-quit_conversation:
+message_user:
+    type: 'redirect_message'
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+move_to_user:
+    type: switch_user
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+exit_level:
+    type: exit_level
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+get_help_user:
     type: 'text'
-    text: '{Aqui va bloque de generar recordatorios}'
+    text: "+u - loop de generar usuario - flow con retro\nu - moverse a un usuario - setup \nls- listar usuarios - flow sin retro\nc - listar casos - flow sin retro\n? - Obtener ayuda  - flow sin retro\nm - mandar mensaje - flow sin retro\nx - salir CUI - flow sin retro\nXX Salir del nivel - flow sin retro\n! Completar caso abierto - setup\nr. crear reporte abierto - setup\nr! Completar reporte abierto - setup\nv. crear venta - setup\nv! Completar venta - setup"
     requires_user_response: 'false'
-    next_interaction: show_user_list_after_register
+    next_interaction: user_interface
 
-show_user_list_after_register:
-    type: 'owned_users_threads'
-    text: 'Te recuerdo que tienes *conversaciones pendientes:*'
-    requires_user_response: 'false'
-    next_interaction: agent_options
+if_general_or_user:
+    type: if_general_or_user
+    requires_user_reponse: 'false'
+    general_interaction: 'general_interface'
+    user_interaction: 'user_interface'
 
-user_list:
-    type: 'owned_users_threads'
-    text: 'Tienes *conversaciones pendientes:*'
-    requires_user_response: 'false'
-    next_interaction: end_demo
-
-end_demo:
-    type: 'text'
-    text: 'Aqui termina el demo.'
-    finishes_conversation: 'true'
+attend_new_message:
+    type: attend_new_message
+    requires_user_reponse: 'false'
+    next_interaction: if_general_or_user

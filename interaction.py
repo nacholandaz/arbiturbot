@@ -8,7 +8,12 @@ import interactions.pre_register_user as pre_register_user
 import interactions.register_user as register_user
 import interactions.redirect_message as redirect_message
 import interactions.owned_users_threads as owned_users_threads
-import conversation
+import interactions.owned_users_threads as owned_users_threads
+import interactions.conversational_interface as conversational_interface
+import interactions.if_general_or_user as if_general_or_user
+import interactions.switch_user as switch_user
+import interactions.exit_level as exit_level
+import interactions.attend_new_message as attend_new_message
 
 def get_next_interaction_name(interaction, message):
     interaction_type = interaction.get('type')
@@ -22,6 +27,11 @@ def get_next_interaction_name(interaction, message):
         'register_user': register_user.get_next_interaction,
         'redirect_message': redirect_message.get_next_interaction,
         'owned_users_threads': owned_users_threads.get_next_interaction,
+        'conversational_interface': conversational_interface.get_next_interaction,
+        'if_general_or_user': if_general_or_user.get_next_interaction,
+        'switch_user': switch_user.get_next_interaction,
+        'exit_level': exit_level.get_next_interaction,
+        'attend_new_message': attend_new_message.get_next_interaction,
     }
     return next_interaction_function[interaction_type](interaction, message)
 
@@ -39,6 +49,11 @@ def run_interaction(interaction, message):
         'register_user': register_user.logic,
         'redirect_message': redirect_message.logic,
         'owned_users_threads':owned_users_threads.logic,
+        'conversational_interface_level': conversational_interface.logic,
+        'if_general_or_user': if_general_or_user.logic,
+        'switch_user': switch_user.logic,
+        'exit_level': exit_level.logic,
+        'attend_new_message': attend_new_message.logic,
     }
     return logic_function[interaction_type](interaction, message)
 

@@ -15,12 +15,22 @@ def recieve_message(message):
     return True
 
 
-def save_context(last_interaction, message, user_id):
+def save_answer_context(last_interaction, message, user_id):
     print(message)
     field = last_interaction.get('save_answer_context')
     text = message['text']
     conversation.update_context(user_id, field, text)
     return True
+
+def save_field_conext(next_interaction, message, user_id):
+    field_data = next_interaction.get('save_field_context')
+    conversation.update_context(user_id, field_data.get('field'), field_data.get('value'))
+    return True
+
+def attend_new_message(message):
+    if message.get('text').split(' ')[0] == 'p':
+        return True
+    return False
 
 def move_conversation(message):
     # Past interaction actions
@@ -31,18 +41,24 @@ def move_conversation(message):
     last_interaction_name = last_message.get('interaction_name')
     print(last_interaction_name)
     last_interaction = dialog.get_interaction(last_interaction_name, user_id)
-    if last_interaction.get('save_answer_context') == 'true': save_context(last_interaction, message, user_id)
+
+    if 'save_answer_context' in last_interaction: save_answer_context(last_interaction, message, user_id)
     if last_interaction.get('save_intent') == 'true':
         utterance_intent = luis_ai.get_label(message['text'])
         conversation.update_context(user_id, 'intent', utterance_intent)
-    # Next interaction action
-    next_interaction_name = interaction.get_next_interaction_name(last_interaction, message)
+    if attend_new_message(message) == True and user.get_user_type(user_id) == 'agent':
+        next_interaction_name = 'attend_new_message'
+    else:
+        next_interaction_name = interaction.get_next_interaction_name(last_interaction, message)
     print(next_interaction_name)
+
     next_interaction = dialog.get_interaction(next_interaction_name, user_id)
     interaction.run_interaction(next_interaction, message)
     conversation.update(next_interaction, next_interaction_name, message)
+
     if next_interaction.get('requires_user_response') == 'false': recieve_message(message)
     if next_interaction.get('finishes_conversation') == 'true': conversation.set_finished(user_id)
+    if 'save_field_context' in next_interaction: save_field_context(next_interaction, message, user_id)
     if next_interaction.get('create_thread') == 'true':
         thread_label = conversation.context(user_id).get('intent')
         message_id = conversation.get_last_canonical_message_id(user_id)
