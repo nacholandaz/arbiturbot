@@ -5,7 +5,7 @@ def logic(interaction, message):
     user.update(user_id, {'redirect_user': None})
     user.update(user_id, {'redirect_name': None})
     user.update(user_id, {'redirect_phone': None})
-    user.update(user_id, {'conversational_level', 'general'})
+    user.update(user_id, {'conversational_level': 'general'})
     return True
 
 def get_next_interaction(interaction, message):

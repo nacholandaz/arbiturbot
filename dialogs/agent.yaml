@@ -13,7 +13,7 @@ presentation:
     type: 'text'
     text: 'Soy Arbi, estoy aquí para lo que necesites!'
     requires_user_response: 'false'
-    next_interaction: 'agent_options'
+    next_interaction: 'general_interface'
 
 general_interface:
     type: 'conversational_interface'
@@ -39,7 +39,7 @@ get_help:
 
 user_interface:
     type: 'conversational_interface'
-    text: "Actualmente te encuentras hablando con ${redirect_user} (${redirect_phone})"
+    text: "Actualmente te encuentras hablando con ${redirect_name} (${redirect_phone})"
     requires_user_response: 'true'
     available_commands: {
         '+u': add_user,
@@ -75,9 +75,9 @@ conversation_start:
     type: 'text'
     text: "¡Listo! Haz registrado a ${new_user_info_name}(${new_user_info_phone})"
     requires_user_response: 'false'
-    next_interaction: 'presentation'
+    next_interaction: 'first_message'
 
-presentation:
+first_message:
     type: 'text'
     text: "Escribe tu primer mensaje (ejemplo: m hola!)"
     requires_user_response: 'true'
@@ -106,11 +106,11 @@ get_help_user:
 
 if_general_or_user:
     type: if_general_or_user
-    requires_user_reponse: 'false'
+    requires_user_response: 'false'
     general_interaction: 'general_interface'
     user_interaction: 'user_interface'
 
 attend_new_message:
     type: attend_new_message
-    requires_user_reponse: 'false'
+    requires_user_response: 'false'
     next_interaction: if_general_or_user

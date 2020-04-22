@@ -28,7 +28,7 @@ def logic(interaction, message):
     user.update(user_id, {'redirect_user': id_create_user})
     user.update(user_id, {'redirect_name': name})
     user.update(user_id, {'redirect_phone': phone})
-    user.update(user_id, {'conversational_level', 'user'})
+    user.update(user_id, {'conversational_level': 'user'})
     return True
 
 def get_next_interaction(interaction, message):

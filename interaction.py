@@ -14,6 +14,7 @@ import interactions.if_general_or_user as if_general_or_user
 import interactions.switch_user as switch_user
 import interactions.exit_level as exit_level
 import interactions.attend_new_message as attend_new_message
+import conversation
 
 def get_next_interaction_name(interaction, message):
     interaction_type = interaction.get('type')
@@ -49,7 +50,7 @@ def run_interaction(interaction, message):
         'register_user': register_user.logic,
         'redirect_message': redirect_message.logic,
         'owned_users_threads':owned_users_threads.logic,
-        'conversational_interface_level': conversational_interface.logic,
+        'conversational_interface': conversational_interface.logic,
         'if_general_or_user': if_general_or_user.logic,
         'switch_user': switch_user.logic,
         'exit_level': exit_level.logic,

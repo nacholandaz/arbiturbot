@@ -22,7 +22,7 @@ def save_answer_context(last_interaction, message, user_id):
     conversation.update_context(user_id, field, text)
     return True
 
-def save_field_conext(next_interaction, message, user_id):
+def save_field_context(next_interaction, message, user_id):
     field_data = next_interaction.get('save_field_context')
     conversation.update_context(user_id, field_data.get('field'), field_data.get('value'))
     return True
@@ -56,7 +56,10 @@ def move_conversation(message):
     interaction.run_interaction(next_interaction, message)
     conversation.update(next_interaction, next_interaction_name, message)
 
-    if next_interaction.get('requires_user_response') == 'false': recieve_message(message)
+    if next_interaction.get('requires_user_response') == 'false':
+        if attend_new_message(message) != 'p':
+            message['text'] = 'done'
+        recieve_message(message)
     if next_interaction.get('finishes_conversation') == 'true': conversation.set_finished(user_id)
     if 'save_field_context' in next_interaction: save_field_context(next_interaction, message, user_id)
     if next_interaction.get('create_thread') == 'true':
