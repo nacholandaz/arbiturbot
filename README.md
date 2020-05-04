@@ -18,9 +18,11 @@ LUIS_AI_KEY={from luis.ai}
 
 ```
 
+root directory should also include `credentials.json` file (https://cran.r-project.org/web/packages/gargle/vignettes/get-api-credentials.html follow "OAuth client ID and secret" guide in that site for that)
+
 * run docker-compose build
 
-## Setup server
+## Start server
 
 * Run ngrok locally (https://ngrok.com/) using `ngrok http 5000`
 * Setup ngrok manually using a function of type, using a function like:
