@@ -97,6 +97,7 @@ def update(user_id, user_data):
 
 def agents(): return {
     '8117649489': {'name': 'Ric'},
+    '8118225870': {'name': 'Nacho'},
 }
 
 def get_agent(user_id):

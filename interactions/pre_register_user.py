@@ -4,7 +4,7 @@ import conversation
 def logic(interaction, message):
     user_id = message['user_id']
     user_context = conversation.context(user_id)
-    new_user_info = user_context['new_user_info']
+    new_user_info = message.get('text')
 
     new_user_info = new_user_info.replace('+u ', '')
     name, phone = new_user_info.split(' (')

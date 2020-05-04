@@ -34,6 +34,7 @@ def hard_reset():
     return True
 
 def respond(data):
+    print(data)
     text = data.get('body')
     user_id = data.get('author')
     print(data)
@@ -54,11 +55,11 @@ def respond(data):
     return True
 
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def index_route():
     return jsonify({'greeting': 'welcome to the arbitrur bot'})
 
-@app.route('/messages', methods=['POST'])
+@app.route('/messages', methods=['GET','POST'])
 def messages_route():
     os.environ['CLI_ON'] = "0"
     data = request.get_json().get('messages')[0]
