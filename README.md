@@ -7,12 +7,17 @@ A service oriented intelligent engine to provide a chat interface to costumer ma
 * Install docker and docker-compose
 * Create environment file .env
 ```
-SPREAD_URL={Saving spreadsheet here}
-GPT_URL={URL for gpt response shere}
-ARBITRUR_PHONE={Phone used to send messages from}
-ARBITRUR_MONGO_URL={Url from mongodb atlas to save data to}
-CHAT_TOKEN={chat-api token to connect to server}
+SPREAD_URL={if this is to connect to a spreadsheet, insert url here}
+GPT_URL=https://transformer.huggingface.co/autocomplete/gpt
+ARBITRUR_PHONE={phone number format: 8111231234}
+ARBITRUR_MONGO_URL={from cluster url https://www.mongodb.com/, make sure to setup networking access and username}
+CHAT_TOKEN={from chat-api.com}
+CLI_ON=0 // 1 for CLI Mode
+LUIS_AI_ID={from luis.ai, setup intelligence with two modes: report/sale}
+LUIS_AI_KEY={from luis.ai}
+
 ```
+
 * run docker-compose build
 
 ## Setup server
