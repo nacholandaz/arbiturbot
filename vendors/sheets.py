@@ -47,7 +47,7 @@ def insert_row(context):
     output = []
     for key in headers:
         if key in context:
-            output.append(context[key])
+            output.append(str(context[key]))
         else:
             output.append('N/A')
     sheet = client.open_by_url(spread_url)

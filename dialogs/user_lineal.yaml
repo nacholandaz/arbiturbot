@@ -1,0 +1,131 @@
+initial_user_message:
+    type: 'text'
+    text: 'User generated text'
+    next_interaction: start
+    save_intent: 'true'
+
+start:
+    type: 'text'
+    text: 'Bienvenid@!'
+    requires_user_response: 'false'
+    next_interaction: 'redirect_conversation'
+
+redirect_conversation:
+    type: 'if_bifurcation'
+    context_variable: 'intent'
+    if_value: 'support'
+    requires_user_response: 'false'
+    true_next_interaction: 'support_confirm'
+    false_next_interaction: 'sale_confirm'
+
+support_confirm:
+    type: 'multiple_choice'
+    text: 'Entendi que quieres hacer un reporte, te entendi bien?'
+    requires_user_response: 'true'
+    next_interaction: {
+        'si':  support_start,
+        'no':  support_failed,
+    }
+    next_interaction_failure: close_conversation
+
+support_start:
+    type: 'text'
+    text: 'Lamentamos los problemas a los que te estas enfrenando. Cuál es tu nombre?'
+    requires_user_response: 'true'
+    next_interaction: 'support_when'
+    save_answer_context: 'name'
+
+support_when:
+    type: 'text'
+    text: 'Disculpa si ya lo mencionaste, pero, desde cuando tienes ese problema?'
+    requires_user_response: 'true'
+    save_answer_context: 'support_problem_start'
+    next_interaction: 'close_conversation'
+
+support_failed:
+    type: 'multiple_choice'
+    text: 'Hecho, te interesa saber un poco de nuestra oferta de espacios?'
+    requires_user_response: 'true'
+    next_interaction: {
+        'si':  sale_start,
+        'no':  close_conversation,
+    }
+
+sale_confirm:
+    type: 'multiple_choice'
+    text: 'Entendi que te interesa uno de nuestros espacios, te entendi bien?'
+    requires_user_response: 'true'
+    next_interaction: {
+        'si':  sale_start,
+        'no':  sale_failed,
+    }
+    next_interaction_failure: close_conversation
+
+sale_start:
+    type: 'text'
+    text: "Eso! Actualmente contamos con departamentos disponibles en:\n1. Dos Loft en Edificio X\n2. Dos Departamentos de una recamara en Edificio Y"
+    requires_user_response: 'false'
+    next_interaction: 'which_building'
+
+sale_failed:
+    type: 'multiple_choice'
+    text: 'Hecho, te gustaria hacer un reporte de uno de nuestros espacios?'
+    requires_user_response: 'true'
+    next_interaction: {
+        'si':  support_start,
+        'no':  close_conversation,
+    }
+
+which_building:
+    type: 'multiple_choice'
+    text: 'De cual edificio te gustaria saber más?'
+    requires_user_response: 'true'
+    next_interaction: {
+        'x':  info_space_1,
+        'y':  info_space_2,
+    }
+    next_interaction_failure: close_conversation
+
+info_space_1:
+    type: 'multiple_choice'
+    text: 'Aqui va informacion de Edificio X. Te interesaria que te contactemos para que platicar más detalles?'
+    requires_user_response: 'true'
+    next_interaction: {
+        'si':  sale_ask_name,
+        'no':  which_building,
+    }
+    next_interaction_failure: close_conversation
+
+info_space_2:
+    type: 'multiple_choice'
+    text: 'Aqui va informacion de Edificio Y. Te interesaria que te contactemos para que platicar más detalles?'
+    requires_user_response: 'true'
+    next_interaction: {
+        'si':  sale_ask_name,
+        'no':  which_building,
+    }
+    next_interaction_failure: close_conversation
+
+sale_ask_name:
+    type: 'text'
+    text: 'Excelente. Cual es tu nombre?'
+    requires_user_response: 'true'
+    next_interaction: 'close_conversation_name'
+    save_answer_context: 'name'
+
+close_conversation:
+    type: 'text'
+    text: 'Una persona atendera tu caso a la brevedad, muchas gracias por contactarnos!'
+    requires_user_response: 'false'
+    next_interaction: 'save_to_drive'
+
+close_conversation_name:
+    type: 'text'
+    text: "Ok ${name}. Una persona atendera tu caso a la brevedad, muchas gracias por contactarnos!"
+    requires_user_response: 'false'
+    next_interaction: 'save_to_drive'
+
+save_to_drive:
+    type: 'upload_drive'
+    finishes_conversation: 'true'
+

@@ -14,6 +14,7 @@ import interactions.if_general_or_user as if_general_or_user
 import interactions.switch_user as switch_user
 import interactions.exit_level as exit_level
 import interactions.attend_new_message as attend_new_message
+import interactions.if_bifurcation as if_bifurcation
 import conversation
 
 def get_next_interaction_name(interaction, message):
@@ -33,6 +34,7 @@ def get_next_interaction_name(interaction, message):
         'switch_user': switch_user.get_next_interaction,
         'exit_level': exit_level.get_next_interaction,
         'attend_new_message': attend_new_message.get_next_interaction,
+        'if_bifurcation': if_bifurcation.get_next_interaction,
     }
     return next_interaction_function[interaction_type](interaction, message)
 
@@ -55,6 +57,7 @@ def run_interaction(interaction, message):
         'switch_user': switch_user.logic,
         'exit_level': exit_level.logic,
         'attend_new_message': attend_new_message.logic,
+        'if_bifurcation': if_bifurcation.logic,
     }
     return logic_function[interaction_type](interaction, message)
 
