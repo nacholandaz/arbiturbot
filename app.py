@@ -49,9 +49,13 @@ def respond(data):
     RECIEVER_ID = user.phone_to_id(os.getenv('ARBITRUR_PHONE'))
     if user.get(user_id) is None: user.create(user_id)
     if conversation.find(message) is None: conversation.create(message)
+    # If we are already handling a message and we are not done, ignore.
+    if user.is_bot_answering(user_id) == True: return True
+    user.set_user_answering(user_id)
     conversation.update_canonical_conversation(user_id, RECIEVER_ID, text, 'user')
     print('Moving Convo')
     core.recieve_message(message)
+    user.remove_user_answering(user_id)
     return True
 
 

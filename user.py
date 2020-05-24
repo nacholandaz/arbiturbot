@@ -76,6 +76,7 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
         'created_at': datetime.now(),
         'owners': [],
         'threads': [],
+        'answering': False,
     }
 
     if 'owner' in user_data:
@@ -94,6 +95,20 @@ def update(user_id, user_data):
         upsert=True
     )
     return True
+
+def set_user_answering(user_id):
+    update(user_id, {'answering':True})
+    return True
+
+def remove_user_answering(user_id):
+    update(user_id, {'answering':False})
+    return True
+
+def is_bot_answering(user_id):
+    user = get(user_id)
+    answering = user.get('answering')
+    if answering: return answering
+    return False
 
 def agents(): return {
     '8117649489': {'name': 'Ric'},
