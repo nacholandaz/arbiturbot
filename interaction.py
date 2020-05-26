@@ -8,13 +8,14 @@ import interactions.pre_register_user as pre_register_user
 import interactions.register_user as register_user
 import interactions.redirect_message as redirect_message
 import interactions.owned_users_threads as owned_users_threads
-import interactions.owned_users_threads as owned_users_threads
 import interactions.conversational_interface as conversational_interface
 import interactions.if_general_or_user as if_general_or_user
 import interactions.switch_user as switch_user
 import interactions.exit_level as exit_level
 import interactions.attend_new_message as attend_new_message
 import interactions.if_bifurcation as if_bifurcation
+import interactions.list_users as list_users
+import interactions.list_cases as list_cases
 import conversation
 
 def get_next_interaction_name(interaction, message):
@@ -35,6 +36,8 @@ def get_next_interaction_name(interaction, message):
         'exit_level': exit_level.get_next_interaction,
         'attend_new_message': attend_new_message.get_next_interaction,
         'if_bifurcation': if_bifurcation.get_next_interaction,
+        'list_users': list_users.get_next_interaction,
+        'list_cases': list_cases.get_next_interaction,
     }
     return next_interaction_function[interaction_type](interaction, message)
 
@@ -58,6 +61,8 @@ def run_interaction(interaction, message):
         'exit_level': exit_level.logic,
         'attend_new_message': attend_new_message.logic,
         'if_bifurcation': if_bifurcation.logic,
+        'list_users': list_users.logic,
+        'list_cases': list_cases.logic,
     }
     return logic_function[interaction_type](interaction, message)
 

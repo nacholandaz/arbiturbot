@@ -22,8 +22,8 @@ general_interface:
     available_commands: {
         '+u':  add_user,
         'u':  move_to_user,
-        'ls': list_users, #TBD
-        'c':  list_cases, #TBD
+        'ls': list_users,
+        'c':  list_cases,
         '?': get_help,
     }
     next_interaction_failure: error_command
@@ -45,8 +45,8 @@ user_interface:
         '+u': add_user,
         'u': move_to_user,
         'm': message_user,
-        'ls': list_users, #TBD
-        'c': list_cases, #TBD
+        'ls': list_users,
+        'c': list_cases,
         '?': get_help_user,
         'x': exit_level,
         '!': complete_case, #TBD
@@ -69,11 +69,11 @@ add_user:
 register_user:
     type: 'register_user'
     requires_user_response: 'false'
-    next_interaction: conversation_start
+    next_interaction: registered_confirm_start
 
-conversation_start:
+registered_confirm_start:
     type: 'text'
-    text: "¡Listo! Haz registrado a ${new_user_info_name}(${new_user_info_phone})"
+    text: "¡Listo! Has registrado a ${new_user_info_name}(${new_user_info_phone})"
     requires_user_response: 'false'
     next_interaction: 'first_message'
 
@@ -90,6 +90,18 @@ message_user:
 
 move_to_user:
     type: switch_user
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+list_users:
+    type: list_users
+    text: "L@s usuari@os activ@s son:"
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+list_cases:
+    type: list_cases
+    text: "Los casos activos son:"
     requires_user_response: 'false'
     next_interaction: if_general_or_user
 
