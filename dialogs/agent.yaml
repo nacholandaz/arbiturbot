@@ -49,11 +49,11 @@ user_interface:
         'c': list_cases,
         '?': get_help_user,
         'x': exit_level,
-        '!': complete_case, #TBD
         'r.': start_report, #TBD
         'r!': close_report, #TBD
         'v.': start_sale, #TBD
         'v!': complete_sale, #TBD
+        '!': complete_case, #TBD
     }
     next_interaction_failure: error_command
     save_field_context:

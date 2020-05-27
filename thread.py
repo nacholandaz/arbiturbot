@@ -47,9 +47,11 @@ def update(user_id, thread_id, field, value):
     )
     return True
 
+
 def printable_label(label):
     label_dict = {None: 'indefinido', 'sale': 'venta', 'report': 'repote'}
     return label_dict.get(label)
+
 
 def printable_status(solved):
     if True: 'resuelto'

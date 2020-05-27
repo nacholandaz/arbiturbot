@@ -11,6 +11,22 @@ import thread
 from vendors import luis_ai
 
 def recieve_message(message):
+    """
+    Caller function to start moving conversation.
+
+    Parameters
+    ----------
+    message : dictionary
+        Message information recieved from the API.
+
+    Attributes
+    ----------
+    None
+
+    Methods
+    -------
+    None
+    """
     move_conversation(message)
     return True
 
@@ -28,7 +44,7 @@ def save_field_context(next_interaction, message, user_id):
     return True
 
 def attend_new_message(message):
-    if message.get('text').split(' ')[0] == 'p':
+    if message.get('text').split(' ')[0] == 'p' and len(message.get('text')) == 1:
         return True
     return False
 
