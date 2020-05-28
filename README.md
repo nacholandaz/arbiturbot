@@ -43,6 +43,13 @@ This will run the terminal client. It will ask if the database should be clear a
 Keep in mind that if you use the configuration given that points to atlas, this could delete all information
 stored.
 
+
+## Run tests
+
+```
+docker-compose run web pytest
+```
+
 ### Example objects on database
 
 #### Example conversation object
