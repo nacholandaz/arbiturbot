@@ -132,7 +132,6 @@ docker-compose run web pytest
  'country': '🇲🇽MX',
  'created_at': datetime.datetime(2020, 4, 12, 16, 58, 6, 102000),
  'owners': [],
- 'context': {},
  'threads': [{'label': None,
    'first_canonical_message_id': None,
    'last_canonical_message_id': 4,
