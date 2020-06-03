@@ -49,11 +49,11 @@ user_interface:
         'c': list_cases,
         '?': get_help_user,
         'x': exit_level,
-        'r.': start_report, #TBD
-        'r!': close_report, #TBD
-        'v.': start_sale, #TBD
-        'v!': complete_sale, #TBD
-        '!': complete_case, #TBD
+        'r.': start_report,
+        'r!': close_report,
+        'v.': start_sale,
+        'v!': complete_sale,
+        '!': complete_case,
     }
     next_interaction_failure: error_command
     save_field_context:
@@ -102,6 +102,36 @@ list_users:
 list_cases:
     type: list_cases
     text: "Los casos activos son:"
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+start_report:
+    type: 'create_case'
+    label: 'report'
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+close_report:
+    type: 'close_case'
+    label: 'report'
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+start_sale:
+    type: 'create_case'
+    label: 'sale'
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+complete_sale:
+    type: 'close_case'
+    label: 'sale'
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+complete_case:
+    type: 'close_case'
+    label: 'None'
     requires_user_response: 'false'
     next_interaction: if_general_or_user
 

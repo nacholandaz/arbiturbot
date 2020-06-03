@@ -132,3 +132,7 @@ def get_canonical_message(user_id, message_id):
     user_conversation = list(conversations.find({'user_id': user_id}))[0]
     messages = user_conversation['canonical_conversation']
     return messages[message_id]
+
+def get_current_redirect_user(agent_id):
+    agent_context = context(agent)
+    return agent_context['redirect_user']
