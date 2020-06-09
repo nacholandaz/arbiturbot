@@ -4,7 +4,8 @@ import thread
 import conversation
 
 def logic(interaction, message):
-    user_id = get_current_redirect_user(agent_id)
+    agent_id = message['user_id']
+    user_id = conversation.get_current_redirect_user(agent_id)
     label = interaction.get('label')
     current_thread = thread.current_open_thread(user_id, label=label)
     if current_thread:

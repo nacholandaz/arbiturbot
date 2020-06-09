@@ -116,8 +116,18 @@ def get_user_messages(user_id):
     messages = [message['text'] for message in user_conversation['canonical_conversation'] if message['sender_type'] =='user']
     return list(set(messages))
 
+def get_canonical_messages(user_id):
+    user_conversation = list(conversations.find({'user_id': user_id}))[0]
+    output = []
+    for message in user_conversation['canonical_conversation']:
+        if message['sender_type'] == 'user':
+            output.append('*' + message['text']  + '*')
+        else:
+            output.append(message['text'])
+    return list(set(output))
+
 def get_printable_conversation(user_id):
-    return '\n'.join(["- " + message for message in get_user_messages(user_id)])
+    return '\n'.join(["- " + message for message in get_canonical_messages(user_id)])
 
 def get_last_message(user_id):
     return get_user_messages(user_id)[-1]
@@ -131,8 +141,22 @@ def get_last_canonical_message_id(user_id):
 def get_canonical_message(user_id, message_id):
     user_conversation = list(conversations.find({'user_id': user_id}))[0]
     messages = user_conversation['canonical_conversation']
+    if message_id is None: return {'text': '*No se encontro mensaje*'}
     return messages[message_id]
 
+def get_canonical_user_message(user_id, position=0):
+    # The idea is to use -1 for last canonical last user message, an 0 for first
+    user_conversation = list(conversations.find({'user_id': user_id}))[0]
+    messages = user_conversation['canonical_conversation']
+    counter = 0
+    for i, message in enumerate(messages):
+        if message['sender_type'] == 'user':
+            user_message_pos = i
+            if position == 0:
+                return user_message_pos
+    return user_message_pos
+
+
 def get_current_redirect_user(agent_id):
-    agent_context = context(agent)
+    agent_context = context(agent_id)
     return agent_context['redirect_user']

@@ -2,7 +2,7 @@ import user
 
 def logic(interaction, message):
     user_id = message['user_id']
-    redirect_user_id = user.phone_to_id(message['text'].split('u '))
+    redirect_user_id = user.phone_to_id(message['text'].replace('u ', ''))
     user_found = user.get(redirect_user_id)
     if user_found is not None:
           user.update(user_id, {'redirect_user': user_found['id']})

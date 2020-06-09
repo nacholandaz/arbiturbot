@@ -24,7 +24,7 @@ def mark_as_read_and_wait(reply_text, message):
     natural_reply_time(reply_text)
     return True
 
-def reply(reply_text, message):
+def reply(reply_text, message, canonical = True):
     mark_as_read_and_wait(reply_text, message)
     user_id = message['user_id']
     meta_chat = {
@@ -38,8 +38,9 @@ def reply(reply_text, message):
         cli.puts_reply(meta_chat)
     if user.get(user_id):
         if conversation.find(user_id) is None: conversation.create_delegated(message)
-        SENDER_ID = user.phone_to_id(os.getenv('ARBITRUR_PHONE'))
-        conversation.update_canonical_conversation(SENDER_ID, user_id, reply_text, 'bot')
+        if canonical == True:
+            SENDER_ID = user.phone_to_id(os.getenv('ARBITRUR_PHONE'))
+            conversation.update_canonical_conversation(SENDER_ID, user_id, reply_text, 'bot')
     return True
 
 def set_webhook(webhook_url):

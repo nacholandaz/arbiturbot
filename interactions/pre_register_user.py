@@ -1,5 +1,6 @@
 from geo import get_country_name_and_flag
 import conversation
+from vendors import chat_api
 
 def logic(interaction, message):
     user_id = message['user_id']
@@ -7,6 +8,9 @@ def logic(interaction, message):
     new_user_info = message.get('text')
 
     new_user_info = new_user_info.replace('+u ', '')
+    if len(new_user_info.split(' ('))==1:
+      chat_api.reply('No incluiste un telefono, intentalo de nuevo', message)
+
     name, phone = new_user_info.split(' (')
     pre_phone = phone.replace(')', '')
     replace_chars = [' ', '+', "-", ")"]

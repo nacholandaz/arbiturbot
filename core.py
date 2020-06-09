@@ -7,6 +7,8 @@ import dialog
 import user
 import os
 import thread
+from vendors import chat_api
+import traceback
 
 from vendors import luis_ai
 
@@ -27,7 +29,13 @@ def recieve_message(message):
     -------
     None
     """
-    move_conversation(message)
+    try:
+        move_conversation(message)
+    except Exception as e:
+        print(e)
+        exception_flow(message)
+        tb = traceback.format_exc()
+        print(tb)
     return True
 
 
@@ -44,9 +52,13 @@ def save_field_context(next_interaction, message, user_id):
     return True
 
 def attend_new_message(message):
-    if message.get('text').split(' ')[0] == 'p':
+    if message.get('text').split(' ')[0].lower() == 'p':
         return True
     return False
+
+def exception_flow(message):
+    chat_api.reply('*Se me cruzaron los cables*', message, False)
+    return True
 
 def move_conversation(message):
     # Past interaction actions
@@ -86,7 +98,7 @@ def move_conversation(message):
     if 'save_field_context' in next_interaction: save_field_context(next_interaction, message, user_id)
     if next_interaction.get('create_thread') == 'true':
         thread_label = conversation.context(user_id).get('intent')
-        message_id = conversation.get_last_canonical_message_id(user_id)
-        thread.create(user_id, message_id, thread_label)
-
+        first_message_id = conversation.get_canonical_user_message(user_id, 0)
+        last_message_id = conversation.get_canonical_user_message(user_id, -1)
+        thread.create(user_id, first_message_id, None, None, 'arbi')
     return True

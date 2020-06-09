@@ -9,15 +9,15 @@ def find_all(user_id=None, label = None, solved = None):
     all_users = list(user.users.find({}))
     response = [item for user_convo in all_users for item in user_combo['threads']]
   if label:
-    response = [ item for item in response in item['label'] == label]
+    response = [ item for item in response if item['label'] == label]
   if solved:
-    response = [ item for item in response in item['solved'] == solved]
-  return solved
+    response = [ item for item in response if item['solved'] == solved]
+  return response
 
 
 def create(user_id, first_message_id = None, label = None, last_message_id = None, label_set_by = 'arbi'):
   if first_message_id == None:
-      first_message_id = get_last_canonical_message_id(user_id)
+      first_message_id = conversation.get_canonical_user_message(user_id, position=0)
 
   current_threads = user.get(user_id).get('threads')
   current_thread_pos =len(current_threads)-1
@@ -68,12 +68,14 @@ def current_open_thread(user_id, label=None, solved = False):
 
 def close(user_id, thread_id = None, label = None):
   if thread_id is None: thread_id = current_open_thread(user_id, label=label, solved = False)
+  if thread_id is None: return False
+  last_message_id = conversation.get_canonical_user_message(user_id, -1)
   user.users.update(
     {'id': user_id},
     {'$set':
       {
-        f'threads.{str(thread_id)}.solved': text,
-        f'threads.{str(thread_id)}.last_canonical_message_id': last_message,
+        f'threads.{str(thread_id)}.solved': True,
+        f'threads.{str(thread_id)}.last_canonical_message_id': last_message_id,
         f'threads.{str(thread_id)}.closed_at': datetime.now(),
         f'threads.{str(thread_id)}.updated_at': datetime.now(),
       }
@@ -92,11 +94,11 @@ def update(user_id, thread_id, field, value):
     return True
 
 def printable_label(label):
-    label_dict = {None: 'indefinido', 'sale': 'venta', 'report': 'repote'}
+    label_dict = {None: 'indefinido', 'sale': 'venta', 'report': 'reporte'}
     return label_dict.get(label)
 
 def printable_status(solved):
-    if True: 'resuelto'
+    if solved == True: return 'resuelto'
     return 'sin resolver'
 
 def get_user_threads(user_id):

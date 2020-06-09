@@ -10,7 +10,9 @@ import os
 import user
 import conversation
 import notification
+import log_handler
 import atexit
+from vendors import chat_api
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=notification.run_notifications, trigger="interval", seconds=60)
@@ -67,7 +69,29 @@ def index_route():
 def messages_route():
     os.environ['CLI_ON'] = "0"
     data = request.get_json().get('messages')[0]
-    respond(data)
+    text = data.get('body')
+    user_id = data.get('author')
+    message = build_message(user_id, text)
+    if text == '//HARDRESET':
+        chat_api.reply('Reseteando status...', message, False)
+        canonical_convo = conversation.get_printable_conversation(user_id)
+        log_handler.create(canonical_convo)
+        chat_api.reply(canonical_convo, message, False)
+        list(user.users.remove())
+        list(conversation.conversations.remove())
+        list(notification.notifications.remove())
+        chat_api.reply('Reseteado',message, False)
+        chat_api.reply('*Log creado*', message, False)
+    elif text == '//DOCUMENT':
+        chat_api.reply('Retornando conversación...', message, False)
+        canonical_convo = conversation.get_printable_conversation(user_id)
+        chat_api.reply(canonical_convo, message, False)
+        log_handler.create(canonical_convo)
+        chat_api.reply('*Log creado*', message, False)
+    elif text == '//LOGS':
+        log_handler.return_logs(message)
+    else:
+        respond(data)
     return jsonify({'success': 'true'})
 
 if __name__ == '__main__':
