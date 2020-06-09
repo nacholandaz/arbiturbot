@@ -26,14 +26,20 @@ general_interface:
         'c':  list_cases,
         '?': get_help,
     }
-    next_interaction_failure: error_command
+    next_interaction_failure: error_command_general
     save_field_context:
         field: conversational_level
         value: general
 
+error_command_general:
+    type: 'text'
+    text: "Comando no encontrado, Intenta de nuevo"
+    requires_user_response: 'false'
+    next_interaction: 'general_interface'
+
 get_help:
     type: 'text'
-    text: "+u - loop de generar usuario - flow con retro\nu - moverse a un usuario - setup \nls- listar usuarios - flow sin retro\nc - listar casos - flow sin retro\n? - Obtener ayuda  - flow sin retro"
+    text: "+u - generar usuario\nu - moverse a un usuario\nls- listar usuarios\nc - listar casos\n? - Obtener ayuda"
     requires_user_response: 'false'
     next_interaction: general_interface
 
@@ -49,16 +55,23 @@ user_interface:
         'c': list_cases,
         '?': get_help_user,
         'x': exit_level,
-        'r.': start_report, #TBD
-        'r!': close_report, #TBD
-        'v.': start_sale, #TBD
-        'v!': complete_sale, #TBD
-        '!': complete_case, #TBD
+        'r.': start_report,
+        'r!': close_report,
+        'v.': start_sale,
+        'v!': complete_sale,
+        '!': complete_case,
     }
-    next_interaction_failure: error_command
+    next_interaction_failure: error_command_user
     save_field_context:
         field: conversational_level
         value: user
+
+
+error_command_user:
+    type: 'text'
+    text: "Comando no encontrado, Intenta de nuevo"
+    requires_user_response: 'false'
+    next_interaction: 'user_interface'
 
 #This converts the context 'new_user_info' to the different context data
 add_user:
@@ -105,6 +118,36 @@ list_cases:
     requires_user_response: 'false'
     next_interaction: if_general_or_user
 
+start_report:
+    type: 'create_case'
+    label: 'report'
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+close_report:
+    type: 'close_case'
+    label: 'report'
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+start_sale:
+    type: 'create_case'
+    label: 'sale'
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+complete_sale:
+    type: 'close_case'
+    label: 'sale'
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
+complete_case:
+    type: 'close_case'
+    label: 'None'
+    requires_user_response: 'false'
+    next_interaction: if_general_or_user
+
 exit_level:
     type: exit_level
     requires_user_response: 'false'
@@ -112,7 +155,7 @@ exit_level:
 
 get_help_user:
     type: 'text'
-    text: "+u - loop de generar usuario - flow con retro\nu - moverse a un usuario - setup \nls- listar usuarios - flow sin retro\nc - listar casos - flow sin retro\n? - Obtener ayuda  - flow sin retro\nm - mandar mensaje - flow sin retro\nx - salir CUI - flow sin retro\nXX Salir del nivel - flow sin retro\n! Completar caso abierto - setup\nr. crear reporte abierto - setup\nr! Completar reporte abierto - setup\nv. crear venta - setup\nv! Completar venta - setup"
+    text: "+u - generar usuario\nu - moverse a un usuario\nls - listar usuarios\nc - listar casos\n? - Obtener ayuda\nm - mandar mensaje\nx - salir CUI\nXX - Salir del nivel\n! - Completar caso abierto\nr. - crear reporte\nr! - Completar reporte abierto\nv. - crear venta\nv! - Completar venta abierta"
     requires_user_response: 'false'
     next_interaction: user_interface
 

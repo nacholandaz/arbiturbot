@@ -77,6 +77,7 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
         'owners': [],
         'threads': [],
         'answering': False,
+        'current_thread': None,
     }
 
     if 'owner' in user_data:

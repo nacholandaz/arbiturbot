@@ -16,6 +16,8 @@ import interactions.attend_new_message as attend_new_message
 import interactions.if_bifurcation as if_bifurcation
 import interactions.list_users as list_users
 import interactions.list_cases as list_cases
+import interactions.create_case as create_case
+import interactions.close_case as close_case
 import conversation
 
 def get_next_interaction_name(interaction, message):
@@ -38,6 +40,8 @@ def get_next_interaction_name(interaction, message):
         'if_bifurcation': if_bifurcation.get_next_interaction,
         'list_users': list_users.get_next_interaction,
         'list_cases': list_cases.get_next_interaction,
+        'create_case': create_case.get_next_interaction,
+        'close_case': close_case.get_next_interaction,
     }
     return next_interaction_function[interaction_type](interaction, message)
 
@@ -63,6 +67,8 @@ def run_interaction(interaction, message):
         'if_bifurcation': if_bifurcation.logic,
         'list_users': list_users.logic,
         'list_cases': list_cases.logic,
+        'create_case': create_case.logic,
+        'close_case': close_case.logic,
     }
     return logic_function[interaction_type](interaction, message)
 

@@ -12,6 +12,7 @@ def logic(interaction, message):
     last_message = get_last_message(user_id)
     for phone in agent_phones:
         agent_user_id = user.phone_to_id(phone)
+        if user.get(agent_user_id) is None: continue
         message = { 'user_id': user.phone_to_id(phone)}
         agent_name = user.agents()[phone]['name']
 
