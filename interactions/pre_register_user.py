@@ -8,8 +8,13 @@ def logic(interaction, message):
     new_user_info = message.get('text')
 
     new_user_info = new_user_info.replace('+u ', '')
+    if '(' not in new_user_info:
+      chat_api.reply('El formato que debes usar es "+u (+52)1231231234 - usando siempre (', message)
+      return True
+
     if len(new_user_info.split(' ('))==1:
       chat_api.reply('No incluiste un telefono, intentalo de nuevo', message)
+      return True
 
     name, phone = new_user_info.split(' (')
     pre_phone = phone.replace(')', '')
