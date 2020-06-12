@@ -9,6 +9,7 @@ import os
 import thread
 from vendors import chat_api
 import traceback
+import random
 
 from vendors import luis_ai
 
@@ -56,8 +57,23 @@ def attend_new_message(message):
         return True
     return False
 
+def get_random_phrase():
+    phrases = [
+        '*Se me cruzaron los cables!*',
+        '*Se me chispoteo!*',
+        '*Santos archibugs batman!*'
+    ]
+    return random.choice(phrases)
+
 def exception_flow(message):
-    chat_api.reply('*Se me cruzaron los cables*', message, False)
+    chat_api.reply(get_random_phrase(), message, False)
+    return True
+
+def set_new_user_pre_register(user_id, message):
+    card = message['card']
+    conversation.update_context(user_id, 'new_user_info_name', card.get('name'))
+    conversation.update_context(user_id, 'new_user_info_phone', card.get('phone'))
+    conversation.update_context(user_id, 'new_user_info_country', card.get('country'))
     return True
 
 def move_conversation(message):
@@ -82,6 +98,9 @@ def move_conversation(message):
 
     if attend_new_message(message) == True and user.get_user_type(user_id) == 'agent':
         next_interaction_name = 'attend_new_message'
+    elif 'card' in message and user.get_user_type(user_id) == 'agent':
+        set_new_user_pre_register(user_id, message)
+        next_interaction_name = 'register_user'
     else:
         next_interaction_name = interaction.get_next_interaction_name(last_interaction, message)
     print(next_interaction_name)

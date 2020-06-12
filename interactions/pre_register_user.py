@@ -1,5 +1,6 @@
 from geo import get_country_name_and_flag
 import conversation
+import user
 from vendors import chat_api
 
 def logic(interaction, message):
@@ -8,19 +9,20 @@ def logic(interaction, message):
     new_user_info = message.get('text')
 
     new_user_info = new_user_info.replace('+u ', '')
-    if '(' not in new_user_info:
-      chat_api.reply('El formato que debes usar es "+u (+52)1231231234 - usando siempre (', message)
+    if ' (' not in new_user_info or len(new_user_info.split(' '))!=2:
+      chat_api.reply('El formato que debes usar es "+u Nombre (5218121231234)" - usando siempre (', message)
       return True
 
-    if len(new_user_info.split(' ('))==1:
-      chat_api.reply('No incluiste un telefono, intentalo de nuevo', message)
+    name_phone_split = new_user_info.split(' (')
+    if len(name_phone_split) != 2:
+      chat_api.reply('No se detecta la separacion de nombre y telefono', message)
       return True
 
-    name, phone = new_user_info.split(' (')
-    pre_phone = phone.replace(')', '')
-    replace_chars = [' ', '+', "-", ")"]
-    for char in replace_chars:
-      phone = phone.replace(char, '')
+    name = name_phone_split[0]
+    phone = name_phone_split[1]
+    phone = user.clean_phone(phone)
+
+    print(phone)
 
     country = get_country_name_and_flag(phone)
 

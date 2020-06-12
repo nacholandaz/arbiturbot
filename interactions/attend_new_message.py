@@ -17,15 +17,23 @@ def logic(interaction, message):
       chat_api.reply(reply_text, message)
 
     new_message_user = user_context.get('last_message_user')
-    if new_message_user is None: return True
+    user_new_message = user.get(new_message_user)
+
+    if user_new_message.get('owner') is None:
+      user.update('owner', user_id)
+
+    if new_message_user is None:
+      chat_api.reply('Falle en encontrar el usuario para hablar', message)
+      return True
 
     new_message_name = user_context['last_message_name']
     new_message_phone = user_context['last_message_phone']
 
-    user.update(user_id, {'redirect_user': new_message_user})
-    user.update(user_id, {'redirect_name': new_message_name})
-    user.update(user_id, {'redirect_phone': new_message_phone})
-    user.update(user_id, {'conversational_level': 'user'})
+    conversation.update_context(user_id, 'redirect_user', new_message_user)
+    conversation.update_context(user_id, 'redirect_name', new_message_name)
+    conversation.update_context(user_id, 'redirect_phone', new_message_phone)
+    conversation.update_context(user_id, 'conversational_level', 'user')
+
 
     return True
 

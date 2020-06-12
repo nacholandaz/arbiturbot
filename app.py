@@ -13,6 +13,8 @@ import notification
 import log_handler
 import atexit
 from vendors import chat_api
+import geo
+import user
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=notification.run_notifications, trigger="interval", seconds=60)
@@ -21,12 +23,20 @@ scheduler.start()
 app = Flask(__name__)
 
 
-def build_message(user_id, text):
+def build_message(user_id, text, body = None):
     message = {
         'created_at': datetime.now(),
         'user_id': user_id,
         'text': text,
     }
+    if body and 'BEGIN:VCARD' in body:
+        card_info = body
+        card_separated = card_info.split('\n')
+        message['card'] = {
+            'name':card_separated[2].replace('FN:',''),
+            'phone': user.clean_phone(card_separated[3].split(':')[-1]),
+            'country':geo.get_country_name_and_flag(user_phone)
+        }
     return message
 
 def hard_reset():
@@ -39,9 +49,10 @@ def respond(data):
     print(data)
     text = data.get('body')
     user_id = data.get('author')
+    body = data.get('body')
     print(data)
     if os.getenv('ARBITRUR_PHONE') in user_id: return True
-    message = build_message(user_id, text)
+    message = build_message(user_id, text, body)
     print(message)
 
     if message['text'] == 'KABOOM!':
@@ -49,7 +60,14 @@ def respond(data):
         return True
 
     RECIEVER_ID = user.phone_to_id(os.getenv('ARBITRUR_PHONE'))
-    if user.get(user_id) is None: user.create(user_id)
+    if user.get(user_id) is None:
+        new_user_phone = data.get('chatId').replace('@c.us','')
+        user_data = {
+            'name': data.get('senderName'),
+            'phone':new_user_phone,
+            'country':  geo.get_country_name_and_flag(new_user_phone)
+        }
+        user.create(user_id, user_data)
     if conversation.find(message) is None: conversation.create(message)
     # If we are already handling a message and we are not done, ignore.
     conversation.update_canonical_conversation(user_id, RECIEVER_ID, text, 'user')
@@ -72,9 +90,13 @@ def messages_route():
     text = data.get('body')
     user_id = data.get('author')
     message = build_message(user_id, text)
+
     if text == '//HARDRESET':
         chat_api.reply('Reseteando status...', message, False)
-        canonical_convo = conversation.get_printable_conversation(user_id)
+        try:
+            canonical_convo = conversation.get_printable_conversation(user_id)
+        except:
+            canonical_convo = "- Ningún mensaje encontrado"
         log_handler.create(canonical_convo)
         chat_api.reply(canonical_convo, message, False)
         list(user.users.remove())
@@ -82,16 +104,20 @@ def messages_route():
         list(notification.notifications.remove())
         chat_api.reply('Reseteado',message, False)
         chat_api.reply('*Log creado*', message, False)
+
     elif text == '//DOCUMENT':
         chat_api.reply('Retornando conversación...', message, False)
         canonical_convo = conversation.get_printable_conversation(user_id)
         chat_api.reply(canonical_convo, message, False)
         log_handler.create(canonical_convo)
         chat_api.reply('*Log creado*', message, False)
+
     elif text == '//LOGS':
         log_handler.return_logs(message)
+
     else:
         respond(data)
+
     return jsonify({'success': 'true'})
 
 if __name__ == '__main__':

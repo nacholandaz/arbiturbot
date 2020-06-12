@@ -22,7 +22,7 @@ def get(id_value, id_type = 'id'):
 def find(owner=None, thread_label = None, thread_solved = None):
     all_users = list(users.find({}))
     if owner:
-        all_users = [ind_user for ind_user in all_users if owner in ind_user['owners']]
+        all_users = [ind_user for ind_user in all_users if owner == ind_user['owner']]
     if thread_label:
         all_users = [ind_user for ind_user in all_users for thread in ind_user['threads'] if thread_label == thread['label']]
     if thread_solved:
@@ -74,14 +74,14 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
         'phone': phone,
         'country': country,
         'created_at': datetime.now(),
-        'owners': [],
+        'owner': None,
         'threads': [],
         'answering': False,
         'current_thread': None,
     }
 
     if 'owner' in user_data:
-        user['owners'].append(user_data.get('owner'))
+        user['owner'] = user_data.get('owner')
 
     return users.insert_one(user)
 
@@ -112,8 +112,9 @@ def is_bot_answering(user_id):
     return False
 
 def agents(): return {
-    '8117649489': {'name': 'Ric'},
-    '8118225870': {'name': 'Nacho'},
+    #'8117649489': {'name': 'Ric'},
+    #'8118225870': {'name': 'Nacho'},
+    '8127488013': {'name': 'Mariana'},
 }
 
 def get_agent(user_id):
@@ -125,10 +126,23 @@ def get_user_type(user_id):
     if get_agent(user_id): return 'agent'
     return 'user'
 
-def phone_to_id(phone):
-    phone = phone.replace(' ', '').replace('+', '')
-    if len(phone) == 10: return '521' + phone + '@c.us'
-    return phone + '@c.us'
+def clean_phone(phone):
+    replace_chars = [' ', '+', "-", ")", '(', '[', ']']
+    for char in replace_chars:
+      phone = phone.replace(char, '')
+    if len(phone) == 10:
+        prefix = '521'
+    elif len(phone) == 11:
+        prefix = '52'
+    elif len(phone) == 12:
+        phone = phone[2:]
+        prefix = '521'
+    else:
+        prefix = ''
+    return prefix + phone
+
+
+def phone_to_id(phone): return clean_phone(phone) + '@c.us'
 
 def id_to_phone(user_id):
     return user_id.split('@')[0]

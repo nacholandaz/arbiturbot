@@ -10,6 +10,9 @@ def logic(interaction, message):
     redirect_name = user_context['redirect_name']
     redirect_phone = user_context['redirect_phone']
     message_redirect = { 'user_id': redirect_user}
+    if len(text.split(' '))<=1:
+        chat_api.reply('Asegurate de agregar un texto que enviar', {'user_id': user_id})
+        return True
     message_text = ' '.join(text.split(' ')[1:])
     print(message_text, message_redirect)
     chat_api.reply(message_text, message_redirect)

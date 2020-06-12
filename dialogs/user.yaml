@@ -8,14 +8,7 @@ start:
     type: 'text'
     text: 'Bienvenid@!'
     requires_user_response: 'false'
-    next_interaction: 'what_name'
-
-what_name:
-    type: 'text'
-    text: 'Cuál es tu nombre?'
-    requires_user_response: 'true'
     next_interaction: 'finish_conversation'
-    save_answer_context: 'name'
 
 finish_conversation:
     type: 'text'

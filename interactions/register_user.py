@@ -9,11 +9,6 @@ def logic(interaction, message):
     name = user_context.get('new_user_info_name')
     phone = user_context.get('new_user_info_phone')
     country = user_context.get('new_user_info_country')
-
-    replace_chars = [' ', '+', "-", ")"]
-    for char in replace_chars:
-      phone = phone.replace(char, '')
-
     id_create_user = user.phone_to_id(phone)
 
     user_data = {
@@ -25,10 +20,10 @@ def logic(interaction, message):
 
     user.create(id_create_user, user_data, 'outbound')
     thread.create(id_create_user, -1)
-    user.update(user_id, {'redirect_user': id_create_user})
-    user.update(user_id, {'redirect_name': name})
-    user.update(user_id, {'redirect_phone': phone})
-    user.update(user_id, {'conversational_level': 'user'})
+    conversation.update_context(user_id, 'redirect_user', id_create_user)
+    conversation.update_context(user_id, 'redirect_name', name)
+    conversation.update_context(user_id, 'redirect_phone', phone)
+    conversation.update_context(user_id, 'conversational_level', 'user')
     return True
 
 def get_next_interaction(interaction, message):

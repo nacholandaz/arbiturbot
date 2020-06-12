@@ -5,7 +5,7 @@ initial_user_message:
 
 start:
     type: 'text'
-    text: 'Hola ${name} 🙋‍♀'
+    text: 'Hola ${name} 🤖'
     requires_user_response: 'false'
     next_interaction: 'presentation'
 
@@ -33,7 +33,7 @@ general_interface:
 
 error_command_general:
     type: 'text'
-    text: "Comando no encontrado, Intenta de nuevo"
+    text: "Comando no encontrado, Intenta de nuevo. Utiliza *?* para conocer los comandos disponibles."
     requires_user_response: 'false'
     next_interaction: 'general_interface'
 
@@ -69,7 +69,7 @@ user_interface:
 
 error_command_user:
     type: 'text'
-    text: "Comando no encontrado, Intenta de nuevo"
+    text: "Comando no encontrado, Intenta de nuevo. Utiliza *?* para conocer los comandos disponibles."
     requires_user_response: 'false'
     next_interaction: 'user_interface'
 
