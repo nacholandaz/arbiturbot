@@ -19,7 +19,7 @@ def get(id_value, id_type = 'id'):
     return user
 
 
-def find(owner=None, thread_label = None, thread_solved = None):
+def find(owner=None, thread_label = None, thread_solved = None, name = None, phone = None):
     all_users = list(users.find({}))
     if owner:
         all_users = [ind_user for ind_user in all_users if owner == ind_user['owner']]
@@ -27,6 +27,10 @@ def find(owner=None, thread_label = None, thread_solved = None):
         all_users = [ind_user for ind_user in all_users for thread in ind_user['threads'] if thread_label == thread['label']]
     if thread_solved:
         all_users = [ind_user for ind_user in all_users for thread in ind_user['threads'] if thread_solved == thread['solved']]
+    if name:
+        all_users = [ind_user for ind_user in all_users if name == ind_user['name']]
+    if phone:
+        all_users = [ind_user for ind_user in all_users if clean_phone(phone) == ind_user['phone']]
     return all_users
 
 
@@ -88,7 +92,8 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
 def update(user_id, user_data):
     # user_data = {field:value, field2:value2 ...z
 
-    if 'phone' in user_data: user_data['country'] = phone_country(user_data['phone'])
+    if 'phone' in user_data:
+        user_data['country'] = country = get_country_name_and_flag(user_data['phone'])
 
     users.find_one_and_update(
         {"id": user_id},
@@ -113,7 +118,7 @@ def is_bot_answering(user_id):
 
 def agents(): return {
     #'8117649489': {'name': 'Ric'},
-    #'8118225870': {'name': 'Nacho'},
+    '8118225870': {'name': 'Nacho'},
     '8127488013': {'name': 'Mariana'},
 }
 

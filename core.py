@@ -112,6 +112,7 @@ def move_conversation(message):
     if next_interaction.get('requires_user_response') == 'false':
         if attend_new_message(message) != 'p':
             message['text'] = 'done'
+        if 'card' in message: del message['card']
         recieve_message(message)
     if next_interaction.get('finishes_conversation') == 'true': conversation.set_finished(user_id)
     if 'save_field_context' in next_interaction: save_field_context(next_interaction, message, user_id)

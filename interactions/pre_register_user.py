@@ -5,17 +5,16 @@ from vendors import chat_api
 
 def logic(interaction, message):
     user_id = message['user_id']
+    conversation.update_context(user_id, 'syntax_error', False)
     user_context = conversation.context(user_id)
     new_user_info = message.get('text')
 
     new_user_info = new_user_info.replace('+u ', '')
-    if ' (' not in new_user_info or len(new_user_info.split(' '))!=2:
-      chat_api.reply('El formato que debes usar es "+u Nombre (5218121231234)" - usando siempre (', message)
-      return True
+    name_phone_split = new_user_info.split('(')
 
-    name_phone_split = new_user_info.split(' (')
-    if len(name_phone_split) != 2:
-      chat_api.reply('No se detecta la separacion de nombre y telefono', message)
+    # Flow, check syntax
+    if '(' not in new_user_info:
+      conversation.update_context(user_id, 'syntax_error', True)
       return True
 
     name = name_phone_split[0]
@@ -27,10 +26,17 @@ def logic(interaction, message):
     country = get_country_name_and_flag(phone)
 
     conversation.update_context(user_id, 'new_user_info_name', name)
-    conversation.update_context(user_id, 'new_user_info_phone', pre_phone)
+    conversation.update_context(user_id, 'new_user_info_phone', phone)
     conversation.update_context(user_id, 'new_user_info_country', country)
 
     return True
 
 def get_next_interaction(interaction, message):
-    return interaction['next_interaction']
+    user_id = message['user_id']
+    user_context = conversation.context(user_id)
+    did_not_follow_syntax = user_context.get('syntax_error')
+    if did_not_follow_syntax == True:
+      next_interaction = interaction['syntax_error']
+    else:
+      next_interaction = interaction['next_interaction']
+    return next_interaction

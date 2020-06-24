@@ -5,167 +5,47 @@ initial_user_message:
 
 start:
     type: 'text'
-    text: 'Hola ${name} 🤖'
+    text: 'Hola, ${name}. Soy Arbi 🤖'
     requires_user_response: 'false'
-    next_interaction: 'presentation'
+    next_interaction: 'know_abilities'
 
-presentation:
+know_abilities:
     type: 'text'
-    text: 'Soy Arbi, estoy aquí para lo que necesites!'
+    text: 'Escribe "?" para conocer mis habilidades.'
     requires_user_response: 'false'
-    next_interaction: 'general_interface'
-
-general_interface:
-    type: 'conversational_interface'
-    text: "Actualmente no te encuentras hablando con nadie"
-    requires_user_response: 'true'
-    available_commands: {
-        '+u':  add_user,
-        'u':  move_to_user,
-        'ls': list_users,
-        'c':  list_cases,
-        '?': get_help,
-    }
-    next_interaction_failure: error_command_general
+    next_interaction: 'cui'
     save_field_context:
         field: conversational_level
         value: general
 
-error_command_general:
-    type: 'text'
-    text: "Comando no encontrado, Intenta de nuevo. Utiliza *?* para conocer los comandos disponibles."
-    requires_user_response: 'false'
-    next_interaction: 'general_interface'
-
-get_help:
-    type: 'text'
-    text: "+u - generar usuario\nu - moverse a un usuario\nls- listar usuarios\nc - listar casos\n? - Obtener ayuda"
-    requires_user_response: 'false'
-    next_interaction: general_interface
-
-user_interface:
+cui:
     type: 'conversational_interface'
-    text: "Actualmente te encuentras hablando con ${redirect_name} (${redirect_phone})"
     requires_user_response: 'true'
     available_commands: {
-        '+u': add_user,
-        'u': move_to_user,
-        'm': message_user,
-        'ls': list_users,
-        'c': list_cases,
-        '?': get_help_user,
-        'x': exit_level,
-        'r.': start_report,
-        'r!': close_report,
-        'v.': start_sale,
-        'v!': complete_sale,
-        '!': complete_case,
+        '+u':  add_user,
     }
-    next_interaction_failure: error_command_user
-    save_field_context:
-        field: conversational_level
-        value: user
+    next_interaction_failure: error_command
 
-
-error_command_user:
+error_command:
     type: 'text'
     text: "Comando no encontrado, Intenta de nuevo. Utiliza *?* para conocer los comandos disponibles."
     requires_user_response: 'false'
-    next_interaction: 'user_interface'
+    next_interaction: 'cui'
 
-#This converts the context 'new_user_info' to the different context data
 add_user:
     type: 'pre_register_user'
     requires_user_response: 'false'
     next_interaction: register_user
+    syntax_error: register_syntax_error
 
 register_user:
     type: 'register_user'
     requires_user_response: 'false'
-    next_interaction: registered_confirm_start
+    next_interaction: cui
 
-registered_confirm_start:
+register_syntax_error:
     type: 'text'
-    text: "¡Listo! Has registrado a ${new_user_info_name}(${new_user_info_phone})"
+    text: "Puedes mandar el contacto directo o escribe esto\n+u Loya Macuarra (812345678)"
     requires_user_response: 'false'
-    next_interaction: 'first_message'
+    next_interaction: 'cui'
 
-first_message:
-    type: 'text'
-    text: "Escribe tu primer mensaje (ejemplo: m hola!)"
-    requires_user_response: 'true'
-    next_interaction: message_user
-
-message_user:
-    type: 'redirect_message'
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user
-
-move_to_user:
-    type: switch_user
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user
-
-list_users:
-    type: list_users
-    text: "L@s usuari@os activ@s son:"
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user
-
-list_cases:
-    type: list_cases
-    text: "Los casos activos son:"
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user
-
-start_report:
-    type: 'create_case'
-    label: 'report'
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user
-
-close_report:
-    type: 'close_case'
-    label: 'report'
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user
-
-start_sale:
-    type: 'create_case'
-    label: 'sale'
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user
-
-complete_sale:
-    type: 'close_case'
-    label: 'sale'
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user
-
-complete_case:
-    type: 'close_case'
-    label: 'None'
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user
-
-exit_level:
-    type: exit_level
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user
-
-get_help_user:
-    type: 'text'
-    text: "+u - generar usuario\nu - moverse a un usuario\nls - listar usuarios\nc - listar casos\n? - Obtener ayuda\nm - mandar mensaje\nx - salir CUI\nXX - Salir del nivel\n! - Completar caso abierto\nr. - crear reporte\nr! - Completar reporte abierto\nv. - crear venta\nv! - Completar venta abierta"
-    requires_user_response: 'false'
-    next_interaction: user_interface
-
-if_general_or_user:
-    type: if_general_or_user
-    requires_user_response: 'false'
-    general_interaction: 'general_interface'
-    user_interaction: 'user_interface'
-
-attend_new_message:
-    type: attend_new_message
-    requires_user_response: 'false'
-    next_interaction: if_general_or_user

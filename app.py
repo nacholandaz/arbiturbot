@@ -32,9 +32,10 @@ def build_message(user_id, text, body = None):
     if body and 'BEGIN:VCARD' in body:
         card_info = body
         card_separated = card_info.split('\n')
+        user_phone = user.clean_phone(card_separated[3].split(':')[-1])
         message['card'] = {
             'name':card_separated[2].replace('FN:',''),
-            'phone': user.clean_phone(card_separated[3].split(':')[-1]),
+            'phone': user_phone,
             'country':geo.get_country_name_and_flag(user_phone)
         }
     return message

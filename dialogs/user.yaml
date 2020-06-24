@@ -13,11 +13,18 @@ start:
 finish_conversation:
     type: 'text'
     text: 'Gracias, estamos notificando un Representante por favor espera un momento'
-    next_interaction: alert_conversation
+    next_interaction: alert_conversation_thread
     requires_user_response: 'false'
+
+alert_conversation_thread:
+    type: 'new_conversation_alert'
+    create_thread: 'true'
+    requires_user_response: 'true'
+    next_interaction: alert_conversation
 
 alert_conversation:
     type: 'new_conversation_alert'
-    finishes_conversation: 'true'
-    create_thread: 'true'
+    requires_user_response: 'true'
+    next_interaction: alert_conversation
+
 

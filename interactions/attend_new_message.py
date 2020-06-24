@@ -19,9 +19,6 @@ def logic(interaction, message):
     new_message_user = user_context.get('last_message_user')
     user_new_message = user.get(new_message_user)
 
-    if user_new_message.get('owner') is None:
-      user.update('owner', user_id)
-
     if new_message_user is None:
       chat_api.reply('Falle en encontrar el usuario para hablar', message)
       return True
@@ -34,7 +31,13 @@ def logic(interaction, message):
     conversation.update_context(user_id, 'redirect_phone', new_message_phone)
     conversation.update_context(user_id, 'conversational_level', 'user')
 
+    # Code shared with switch
+    if user_found.get('owner') is None:
+        user.update(redirect_user_id, { 'owner': user_id } )
 
+    chat_api.reply('La conversación con este usuario es:', message)
+    user_messages = conversation.get_printable_conversation(redirect_user_id)
+    chat_api.reply(user_messages, message)
     return True
 
 def get_next_interaction(interaction, message):
