@@ -61,7 +61,8 @@ def get_random_phrase():
     phrases = [
         '*Se me cruzaron los cables!*',
         '*Se me chispoteo!*',
-        '*Santos archibugs batman!*'
+        '*Santos archibugs batman!*',
+        '*Tranquilx, no soy TAN inteligente... todavia.*'
     ]
     return random.choice(phrases)
 
