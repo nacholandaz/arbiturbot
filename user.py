@@ -19,7 +19,7 @@ def get(id_value, id_type = 'id'):
     return user
 
 
-def find(owner=None, thread_label = None, thread_solved = None, name = None, phone = None):
+def find(owner=None, thread_label = None, thread_solved = None, name = None, phone = None, uuid = None):
     all_users = list(users.find({}))
     if owner:
         all_users = [ind_user for ind_user in all_users if owner == ind_user['owner']]
@@ -31,8 +31,9 @@ def find(owner=None, thread_label = None, thread_solved = None, name = None, pho
         all_users = [ind_user for ind_user in all_users if name == ind_user['name']]
     if phone:
         all_users = [ind_user for ind_user in all_users if clean_phone(phone) == ind_user['phone']]
+    if uuid:
+        all_users = [ind_user for ind_user in all_users if uuid == ind_user['uuid']]
     return all_users
-
 
 def fetch_user_data(user_data):
     name = user_data.get('name')
@@ -41,7 +42,7 @@ def fetch_user_data(user_data):
         day = str(datetime.now().day)
         month = str(datetime.now().month)
         hour = str(datetime.now().hour)
-        uuid = name[0:3].lower() + hour+ day+ month
+        uuid = 'u' + current_index()
     phone = user_data.get('phone')
     return name, uuid, phone
 
@@ -54,17 +55,22 @@ def fetch_agent(user_id):
 def fetch_user(user_id):
     name = chat_api.get_chat_user_name(user_id)
     phone = user_id.split('@')[0]
-    uuid = 'inbound_' + phone[-5:]
+    uuid = 'u' + current_index()
     return name, uuid, phone
+
+def current_user_index():
+    return str(users.count()+1)
+
+def index_exists(uuid): len(list(users.find({'uuid': uuid}))) > 0
 
 def create(user_id, user_data = {}, user_source = 'inbound'):
     user_type = get_user_type(user_id)
 
-    if len(user_data.keys())>0:
-        name, uuid, phone = fetch_user_data(user_data)
+    if user_type == 'agent':
+        name, uuid, phone = fetch_agent(user_id)
     else:
-        if user_type == 'agent':
-            name, uuid, phone = fetch_agent(user_id)
+        if len(user_data.keys())>0:
+            name, uuid, phone = fetch_user_data(user_data)
         else:
             name, uuid, phone = fetch_user(user_id)
 
@@ -84,8 +90,7 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
         'current_thread': None,
     }
 
-    if 'owner' in user_data:
-        user['owner'] = user_data.get('owner')
+    if 'owner' in user_data: user['owner'] = user_data.get('owner')
 
     return users.insert_one(user)
 
@@ -117,9 +122,9 @@ def is_bot_answering(user_id):
     return False
 
 def agents(): return {
-    #'8117649489': {'name': 'Ric'},
-    '8118225870': {'name': 'Nacho'},
-    '8127488013': {'name': 'Mariana'},
+    '8117649489': {'name': 'Ric'},
+    #'8118225870': {'name': 'Nacho'},
+    #'8127488013': {'name': 'Mariana'},
 }
 
 def get_agent(user_id):

@@ -22,7 +22,11 @@ cui:
     type: 'conversational_interface'
     requires_user_response: 'true'
     available_commands: {
-        '+u':  add_user,
+        '+u':  'add_user',
+        #'ls': list,
+        'u': 'list_users',
+        'u.': 'switch_user',
+        '?': 'get_help',
     }
     next_interaction_failure: error_command
 
@@ -49,3 +53,19 @@ register_syntax_error:
     requires_user_response: 'false'
     next_interaction: 'cui'
 
+list_users:
+    type: list_users
+    text: "Seleciona un usuario:"
+    requires_user_response: 'false'
+    next_interaction: cui
+
+switch_user:
+    type: switch_user
+    requires_user_response: 'false'
+    next_interaction: cui
+
+get_help_user:
+    type: 'text'
+    text: "+u - generar usuario\nu - moverse a un usuario\nls u  - listar usuarios\nu. - switch user"
+    requires_user_response: 'false'
+    next_interaction: user_interface
