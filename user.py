@@ -42,7 +42,7 @@ def fetch_user_data(user_data):
         day = str(datetime.now().day)
         month = str(datetime.now().month)
         hour = str(datetime.now().hour)
-        uuid = 'u' + current_index()
+        uuid = 'u' + current_user_index()
     phone = user_data.get('phone')
     return name, uuid, phone
 
@@ -55,11 +55,11 @@ def fetch_agent(user_id):
 def fetch_user(user_id):
     name = chat_api.get_chat_user_name(user_id)
     phone = user_id.split('@')[0]
-    uuid = 'u' + current_index()
+    uuid = 'u' + current_user_index()
     return name, uuid, phone
 
 def current_user_index():
-    return str(users.count()+1)
+    return str(len(list(users.find({'type': 'user'})))+1)
 
 def index_exists(uuid): len(list(users.find({'uuid': uuid}))) > 0
 
@@ -123,7 +123,7 @@ def is_bot_answering(user_id):
 
 def agents(): return {
     '8117649489': {'name': 'Ric'},
-    #'8118225870': {'name': 'Nacho'},
+    '8118225870': {'name': 'Nacho'},
     #'8127488013': {'name': 'Mariana'},
 }
 

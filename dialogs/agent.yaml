@@ -23,10 +23,10 @@ cui:
     requires_user_response: 'true'
     available_commands: {
         '+u':  'add_user',
-        #'ls': list,
-        'u': 'list_users',
-        'u.': 'switch_user',
-        '?': 'get_help',
+        'ls': list,
+        'u#': 'switch_user',
+        'm': message_user,
+        '?': 'get_help_user',
     }
     next_interaction_failure: error_command
 
@@ -59,6 +59,11 @@ list_users:
     requires_user_response: 'false'
     next_interaction: cui
 
+list:
+    type: ls_command
+    requires_user_response: 'false'
+    next_interaction: cui
+
 switch_user:
     type: switch_user
     requires_user_response: 'false'
@@ -66,6 +71,11 @@ switch_user:
 
 get_help_user:
     type: 'text'
-    text: "+u - generar usuario\nu - moverse a un usuario\nls u  - listar usuarios\nu. - switch user"
+    text: "+u - generar usuario\nu - moverse a un usuario\nls u  - listar usuarios\nu# - seleccionar usuario\nm - enviar mensaje"
     requires_user_response: 'false'
-    next_interaction: user_interface
+    next_interaction: cui
+
+message_user:
+    type: 'redirect_message'
+    requires_user_response: 'false'
+    next_interaction: cui

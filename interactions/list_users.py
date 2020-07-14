@@ -4,9 +4,12 @@ import thread
 import conversation
 
 def logic(interaction, message):
-  chat_api.reply(interaction['text'], message)
+  chat_api.reply("Selecciona un usuario@:", message)
   user_id = message['user_id']
   users_list = list(user.users.find({'type': 'user'})) #message['user_id']
+  if len(users_list) == 0:
+      chat_api.reply("No hay usuari@s dados de alta", message)
+      return True
   for user_info in users_list:
       if 'name' not in user_info: continue
       user_id = user_info['id']

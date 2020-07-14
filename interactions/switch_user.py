@@ -7,7 +7,7 @@ def logic(interaction, message):
 
     user_id = message['user_id']
     # We can also use the command number detected before
-    redirect_user_number = redirect_user_id.split(' ')[0]
+    redirect_user_number = message['text'].split(' ')[0].lower()
     users_uuid = user.find(uuid = redirect_user_number)
     try:
         user_found = users_uuid[0]
@@ -20,11 +20,13 @@ def logic(interaction, message):
         conversation.update_context(user_id, 'redirect_phone', user_found['phone'])
         conversation.update_context(user_id, 'conversational_level', 'user')
 
+        s_msg = "Haz selecionado al "+user_found['uuid']+" "+user_found['name']
+        chat_api.reply(s_msg, message)
+
         if user_found.get('owner') is None:
             user.update(user_found['id'], { 'owner': user_id } )
 
     else:
-        chat_api.reply('Selecciona un u#', message)
         list_users.logic()
     return True
 

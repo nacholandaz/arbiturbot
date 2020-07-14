@@ -13,12 +13,12 @@ def get_next_interaction(interaction, message):
     text = message.get('text')
     options = list(next_interaction_object.keys())
     user_command = text.lower().split(' ')[0]
-    numbers_in_command = [s for s in str.split() if s.isdigit()]
-    strings_in_command = [s for s in str.split() if not s.isdigit()]
+    numbers_in_command = [s for s in user_command if s.isdigit()]
+    strings_in_command = [s for s in user_command if not s.isdigit()]
 
     if len(numbers_in_command)>0:
         command_number = int(''.join(numbers_in_command))
-        user_command = strings_in_command + '.'
+        user_command = ''.join(strings_in_command) + '#'
         conversation.update_context(user_id, 'command_number', command_number)
 
     for option in options:

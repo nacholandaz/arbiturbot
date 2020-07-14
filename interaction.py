@@ -14,6 +14,7 @@ import interactions.switch_user as switch_user
 import interactions.exit_level as exit_level
 import interactions.attend_new_message as attend_new_message
 import interactions.if_bifurcation as if_bifurcation
+import interactions.ls_command as ls_command
 import interactions.list_users as list_users
 import interactions.list_cases as list_cases
 import interactions.create_case as create_case
@@ -42,6 +43,7 @@ def get_next_interaction_name(interaction, message):
         'list_cases': list_cases.get_next_interaction,
         'create_case': create_case.get_next_interaction,
         'close_case': close_case.get_next_interaction,
+        'ls_command': ls_command.get_next_interaction,
     }
     return next_interaction_function[interaction_type](interaction, message)
 
@@ -69,6 +71,7 @@ def run_interaction(interaction, message):
         'list_cases': list_cases.logic,
         'create_case': create_case.logic,
         'close_case': close_case.logic,
+        'ls_command': ls_command.logic,
     }
     return logic_function[interaction_type](interaction, message)
 
