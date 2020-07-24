@@ -13,7 +13,8 @@ start:
 finish_conversation:
     type: 'text'
     text: 'Gracias, estamos notificando un Representante por favor espera un momento'
-    finishes_conversation: 'true'
+    requires_user_response: 'true'
+    next_interaction: 'finish_conversation'
 
 
 

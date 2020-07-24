@@ -17,6 +17,7 @@ import interactions.if_bifurcation as if_bifurcation
 import interactions.ls_command as ls_command
 import interactions.list_users as list_users
 import interactions.list_cases as list_cases
+import interactions.list_pending_conversations as list_pending
 import interactions.create_case as create_case
 import interactions.close_case as close_case
 import conversation
@@ -41,6 +42,7 @@ def get_next_interaction_name(interaction, message):
         'if_bifurcation': if_bifurcation.get_next_interaction,
         'list_users': list_users.get_next_interaction,
         'list_cases': list_cases.get_next_interaction,
+        'list_pending': list_pending.get_next_interaction,
         'create_case': create_case.get_next_interaction,
         'close_case': close_case.get_next_interaction,
         'ls_command': ls_command.get_next_interaction,
@@ -69,6 +71,7 @@ def run_interaction(interaction, message):
         'if_bifurcation': if_bifurcation.logic,
         'list_users': list_users.logic,
         'list_cases': list_cases.logic,
+        'list_pending': list_pending.logic,
         'create_case': create_case.logic,
         'close_case': close_case.logic,
         'ls_command': ls_command.logic,

@@ -5,7 +5,7 @@ from operator import itemgetter
 import os
 from geo import get_country_name_and_flag
 
-from vendors import chat_api
+from vendors import chat_api, sheets
 
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
 users = client.bot.users
@@ -19,7 +19,7 @@ def get(id_value, id_type = 'id'):
     return user
 
 
-def find(owner=None, thread_label = None, thread_solved = None, name = None, phone = None, uuid = None):
+def find(owner=None, thread_label = None, thread_solved = None, name = None, phone = None, uuid = None, user_type = None):
     all_users = list(users.find({}))
     if owner:
         all_users = [ind_user for ind_user in all_users if owner == ind_user['owner']]
@@ -33,6 +33,8 @@ def find(owner=None, thread_label = None, thread_solved = None, name = None, pho
         all_users = [ind_user for ind_user in all_users if clean_phone(phone) == ind_user['phone']]
     if uuid:
         all_users = [ind_user for ind_user in all_users if uuid == ind_user['uuid']]
+    if user_type:
+        all_users = [ind_user for ind_user in all_users if user_type == ind_user['type']]
     return all_users
 
 def fetch_user_data(user_data):
@@ -102,8 +104,7 @@ def update(user_id, user_data):
 
     users.find_one_and_update(
         {"id": user_id},
-        {"$set": user_data},
-        upsert=True
+        {"$set": user_data}
     )
     return True
 
@@ -121,11 +122,8 @@ def is_bot_answering(user_id):
     if answering: return answering
     return False
 
-def agents(): return {
-    '8117649489': {'name': 'Ric'},
-    '8118225870': {'name': 'Nacho'},
-    #'8127488013': {'name': 'Mariana'},
-}
+def agents():
+    return sheets.get_agents_data()
 
 def get_agent(user_id):
     for agent in agents():

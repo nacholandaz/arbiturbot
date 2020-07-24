@@ -2,11 +2,12 @@ from oauth2client.service_account import ServiceAccountCredentials
 import gspread
 import os
 
-scope = ['https://spreadsheets.google.com/feeds']
+scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
 client = gspread.authorize(creds)
 
 spread_url = os.getenv('SPREAD_URL')
+agents_url = os.getenv('AGENTS_URL')
 
 KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
@@ -54,3 +55,18 @@ def insert_row(context):
     worksheet = sheet.worksheet('Sheet1')
     worksheet.insert_row(output, get_sheet_size(worksheet)+1)
     return True
+
+
+def get_agents_data():
+
+    #records = client.open_by_url(agents_url).sheet1.get_all_records()
+    #output = {}
+    #for row in records:
+    #    row['phone'] = str(row['phone'])
+    #    if row['disable'] != 'yes':
+    #        output[row['phone']] = row
+    output = {
+        '8118225870': {'phone': '8118225870', 'name': 'Nacho', 'disable': 'no'}
+    }
+    print(output)
+    return output

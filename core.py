@@ -7,6 +7,7 @@ import dialog
 import user
 import os
 import thread
+import pending_conversations
 from vendors import chat_api
 import traceback
 import random
@@ -31,12 +32,25 @@ def recieve_message(message):
     None
     """
     try:
+        user_id = message['user_id']
+        if user.get_user_type(user_id) == 'user':
+            set_pending_conversation(message, user_id)
         move_conversation(message)
     except Exception as e:
         print(e)
         exception_flow(message)
         tb = traceback.format_exc()
         print(tb)
+    return True
+
+def set_pending_conversation(message, user_id):
+    u_p_conversations = pending_conversations.find(user_id, closed = False)
+    if u_p_conversations is None or len(u_p_conversations)==0:
+        pending_conversation = pending_conversations.create(user_id)
+    else:
+        pending_conversation = u_p_conversations[0]
+        pending_conversations.received_new_messages(user_id)
+    pending_conversations.alert_admins_pending(pending_conversation)
     return True
 
 
@@ -53,7 +67,7 @@ def save_field_context(next_interaction, message, user_id):
     return True
 
 def attend_new_message(message):
-    if message.get('text').split(' ')[0].lower() == 'p':
+    if message.get('text').split(' ')[0].lower() == 'blocknewmessagesnow':
         return True
     return False
 
@@ -113,7 +127,7 @@ def move_conversation(message):
         if attend_new_message(message) != 'p':
             message['text'] = 'done'
         if 'card' in message: del message['card']
-        recieve_message(message)
+        move_conversation(message)
     if next_interaction.get('finishes_conversation') == 'true': conversation.set_finished(user_id)
     if 'save_field_context' in next_interaction: save_field_context(next_interaction, message, user_id)
     if next_interaction.get('create_thread') == 'true':
