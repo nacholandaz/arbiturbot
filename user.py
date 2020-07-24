@@ -122,6 +122,7 @@ def is_bot_answering(user_id):
     if answering: return answering
     return False
 
+@ring.dict(expire=24*60*60)
 def agents():
     return sheets.get_agents_data()
 

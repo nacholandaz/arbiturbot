@@ -28,6 +28,8 @@ cui:
         'm': message_user,
         '?': get_help_user,
         'p': list_pending,
+        'p#': switch_pending,
+        '!': close_pending,
     }
     next_interaction_failure: error_command
 
@@ -57,6 +59,16 @@ register_syntax_error:
 list_users:
     type: list_users
     text: "Seleciona un usuario:"
+    requires_user_response: 'false'
+    next_interaction: cui
+
+switch_pending:
+    type: switch_pending
+    requires_user_response: 'false'
+    next_interaction: cui
+
+close_pending:
+    type: close_pending
     requires_user_response: 'false'
     next_interaction: cui
 

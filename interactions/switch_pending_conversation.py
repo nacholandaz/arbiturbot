@@ -5,11 +5,14 @@ import conversation
 import pending_conversations
 
 def logic(interaction, message):
-
-    user_id = message['user_id']
     # We can also use the command number detected before
-    redirect_user_number = message['text'].split(' ')[0].lower()
-    users_uuid = user.find(uuid = redirect_user_number)
+    user_id = message['user_id']
+    current_p = message['text'].split(' ')[0].lower()
+
+    current_p_object = pending_conversations.get(redirect_pending_conversation)
+
+    redirect_user_number= current_p_object['user_id']
+    users_uuid = user.get(redirect_user_number)
     try:
         user_found = users_uuid[0]
     except:
@@ -24,7 +27,6 @@ def logic(interaction, message):
         if user_found.get('owner') is None:
             user.update(user_found['id'], { 'owner': user_id } )
 
-        current_p = pending_conversation.find(user_id = user_found['id'], closed = False)[0].get('id')
         conversation.update_context(user_id, 'current_pending_conversation', current_p)
         pending_conversation.add_owner(current_p, user_id)
         pending_conversation.remove_new_messages(current_p)

@@ -11,6 +11,7 @@ import interactions.owned_users_threads as owned_users_threads
 import interactions.conversational_interface as conversational_interface
 import interactions.if_general_or_user as if_general_or_user
 import interactions.switch_user as switch_user
+import interactions.switch_pending_conversation as switch_pending
 import interactions.exit_level as exit_level
 import interactions.attend_new_message as attend_new_message
 import interactions.if_bifurcation as if_bifurcation
@@ -20,6 +21,7 @@ import interactions.list_cases as list_cases
 import interactions.list_pending_conversations as list_pending
 import interactions.create_case as create_case
 import interactions.close_case as close_case
+import interactions.close_pending_conversation as close_pending
 import conversation
 
 def get_next_interaction_name(interaction, message):
@@ -46,6 +48,8 @@ def get_next_interaction_name(interaction, message):
         'create_case': create_case.get_next_interaction,
         'close_case': close_case.get_next_interaction,
         'ls_command': ls_command.get_next_interaction,
+        'switch_pending': switch_pending.get_next_interaction,
+        'close_pending': close_pending.get_next_interaction,
     }
     return next_interaction_function[interaction_type](interaction, message)
 
@@ -75,6 +79,8 @@ def run_interaction(interaction, message):
         'create_case': create_case.logic,
         'close_case': close_case.logic,
         'ls_command': ls_command.logic,
+        'switch_pending': switch_pending.logic,
+        'close_pending': close_pending.logic,
     }
     return logic_function[interaction_type](interaction, message)
 

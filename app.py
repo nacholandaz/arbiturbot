@@ -30,6 +30,9 @@ def build_message(user_id, text, body = None):
         'text': text,
     }
     if body and 'BEGIN:VCARD' in body:
+        print('******* Card Found, printing contents: *********')
+        print(body)
+        print('*******')
         card_info = body
         card_separated = card_info.split('\n')
         user_phone = user.clean_phone(card_separated[3].split(':')[-1])

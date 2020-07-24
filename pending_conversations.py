@@ -63,7 +63,17 @@ def pending_conversations_agent_indicator(agent_id):
   return output_string
 
 def close(pending_conv_id):
-  pending_conversations.update({'id': pending_conv_id}, {'closed': True})
+  pending_conversations.find_one_and_update(
+    {'id': pending_conv_id},
+    {"$set": {'closed': True}}
+  )
+  return True
+
+def open(pending_conv_id):
+  pending_conversations.find_one_and_update(
+    {'id': pending_conv_id},
+    {"$set": {'closed': False}}
+  )
   return True
 
 def received_new_messages(user_id):
@@ -73,7 +83,17 @@ def received_new_messages(user_id):
   )
   return True
 
+def remove_new_messages(user_id):
+  pending_conversations.find_one_and_update(
+    {'user_id': user_id, 'closed': False},
+    {"$set": {'new_messages': False}}
+  )
+  return True
+
 def add_owner(pending_conv_id, owner):
+  pen_conv = get(pending_conv_id)
+  if owner in pen_conv['owners']:
+    return True
   push_obj = {'$push': {'owners': owner}}
   pending_conversations.find_one_and_update(
     {'id': pending_conv_id}, push_obj
@@ -82,7 +102,7 @@ def add_owner(pending_conv_id, owner):
 
 def remove_owner(pending_conv_id, owner_remove):
   pen_conv = get(pending_conv_id)
-  owners = [owner for owner in open_conv['owners'] if owner != owner_remove]
+  owners = [owner for owner in pen_conv['owners'] if owner != owner_remove]
   pending_conversations.find_one_and_update(
     {'id'  : pending_conv_id}, {'set': {'owners': owners }}
   )
