@@ -4,6 +4,8 @@ from datetime import datetime
 from operator import itemgetter
 import os
 from geo import get_country_name_and_flag
+from easy_cache import ecached
+
 
 from vendors import chat_api, sheets
 
@@ -122,7 +124,7 @@ def is_bot_answering(user_id):
     if answering: return answering
     return False
 
-@ring.dict(expire=24*60*60)
+@ecached('agents', 60*60)
 def agents():
     return sheets.get_agents_data()
 
@@ -132,6 +134,7 @@ def get_agent(user_id):
     return None
 
 def get_user_type(user_id):
+    if is_user_server(user_id): return 'server'
     if get_agent(user_id): return 'agent'
     return 'user'
 
@@ -155,3 +158,11 @@ def phone_to_id(phone): return clean_phone(phone) + '@c.us'
 
 def id_to_phone(user_id):
     return user_id.split('@')[0]
+
+def server_user_id():
+    arbi_phone = str(os.getenv('ARBITRUR_PHONE'))
+    return f'521{arbi_phone}@c.us'
+
+def is_user_server(user_id):
+    arbi_user = server_user_id()
+    return user_id == arbi_user

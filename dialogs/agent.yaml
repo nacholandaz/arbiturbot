@@ -23,6 +23,7 @@ cui:
     requires_user_response: 'true'
     available_commands: {
         '+u': add_user,
+        'u': list_users,
         'ls': list,
         'u#': switch_user,
         'm': message_user,
@@ -58,7 +59,6 @@ register_syntax_error:
 
 list_users:
     type: list_users
-    text: "Seleciona un usuario:"
     requires_user_response: 'false'
     next_interaction: cui
 

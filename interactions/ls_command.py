@@ -18,18 +18,16 @@ def logic(interaction, message):
     elif ls_type == 'p':
       list_pending_conversations.logic(interaction, message)
     else:
+      user_id = message['user_id']
+      user_context = conversation.context(user_id)
+      current_id = user_context.get('redirect_user')
 
-      current_name = user_context.get('new_user_info_name')
-      current_phone = user_context.get('new_user_info_phone')
-
-      if current_name is None:
+      if current_id is None:
         s_msg = "No esta seleccionado ningún usuario"
         chat_api.reply(s_msg, message)
         return True
 
-      users_match = user.find(phone=current_phone, name=current_name)
-      current_user_id = users_match[0].get('id')
-      convo = user.get_printable_conversation(current_user_id)
+      convo = conversation.get_printable_conversation(current_id)
       s_msg = "Los mensajes con el usuario actual es:"
       chat_api.reply(s_msg, message)
       chat_api.reply(convo, message)

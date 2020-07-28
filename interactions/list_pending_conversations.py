@@ -12,7 +12,7 @@ def logic(interaction, message):
       chat_api.reply("No hay casos pendientes a resolver", message)
       return True
   for p in p_list:
-      p_user_uuid = p['uuid']
+      p_user_uuid = p['user_uuid']
       star_messages = ''
       if p['new_messages'] == True:
           star_messages = '* '

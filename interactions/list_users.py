@@ -2,6 +2,7 @@ from vendors import chat_api
 import user
 import thread
 import conversation
+import pending_conversations
 
 def logic(interaction, message):
   chat_api.reply("Selecciona un usuario@:", message)
@@ -16,7 +17,12 @@ def logic(interaction, message):
       user_uuid = user_info['uuid']
       user_name = user_info['name']
       user_phone = user_info['phone']
-      text_message = f"👤{user_uuid} = {user_name} ({user_phone})"
+      user_pending = pending_conversations.find(user_id = user_id, closed=False, new_messages=False)
+      if len(user_pending)>0:
+          string_pending = '* '
+      else:
+          string_pending = ''
+      text_message = f"👤{user_uuid} {string_pending}= {user_name} ({user_phone})"
       chat_api.reply(text_message, message)
   return True
 

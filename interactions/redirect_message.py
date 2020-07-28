@@ -1,6 +1,7 @@
 from vendors import chat_api
 import conversation
 import user
+import pending_conversations
 
 def logic(interaction, message):
     user_id = message['user_id']
@@ -18,6 +19,7 @@ def logic(interaction, message):
     chat_api.reply(message_text, message_redirect)
     redirect_message = f"Mensage enviado a {redirect_name} ({redirect_phone})"
     chat_api.reply(redirect_message, {'user_id': user_id})
+    pending_conversations.remove_new_messages(redirect_user)
     return True
 
 def get_next_interaction(interaction, message):

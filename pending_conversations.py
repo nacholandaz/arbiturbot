@@ -37,8 +37,7 @@ def get(pending_conversation_id):
     output = list(pending_conversations.find({'id':pending_conversation_id}))[0]
   except:
     output = None
-  return None
-
+  return output
 
 def find(user_id = None, owner = None, closed = None, new_messages = None):
   if user_id:

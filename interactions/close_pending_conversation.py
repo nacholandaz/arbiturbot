@@ -32,4 +32,3 @@ def logic(interaction, message):
 
 def get_next_interaction(interaction, message):
     return interaction['next_interaction']
-

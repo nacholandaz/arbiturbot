@@ -16,4 +16,4 @@ clint
 apscheduler
 pytest
 pytest-mock
-ring
+easy_cache

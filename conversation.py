@@ -120,14 +120,21 @@ def get_canonical_messages(user_id):
     user_conversation = list(conversations.find({'user_id': user_id}))[0]
     output = []
     for message in user_conversation['canonical_conversation']:
+        if 'BEGIN:VCARD' in message['text']:
+            card_name = message['text'].split('FN:')[1].split('\n')[0]
+            card_phone = message['text'].split('\nEND:')[0].split(':')[-1]
+            message['text'] = f'[Usuario mando tarjeta de {card_name}({card_phone})]'
+        if 'video upload disabled' in message['text'].lower():
+            message['text'] = f'[Usuario mando un video]'
         if message['sender_type'] == 'user':
-            output.append('*' + message['text']  + '*')
-        else:
-            output.append(message['text'])
-    return list(set(output))
+            message['text'] = '*' + message['text']  + '*'
+        output.append(message)
+    output = sorted(output, key=lambda x: x['created_at'])
+    return output
 
 def get_printable_conversation(user_id):
-    return '\n'.join(["- " + message for message in get_canonical_messages(user_id)])
+    user_messages = ["- " + message['text'] for message in get_canonical_messages(user_id)]
+    return '\n'.join(user_messages)
 
 def get_last_message(user_id):
     return get_user_messages(user_id)[-1]
