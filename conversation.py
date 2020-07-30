@@ -127,9 +127,9 @@ def get_canonical_messages(user_id):
         if 'video upload disabled' in message['text'].lower():
             message['text'] = f'[Usuario mando un video]'
         if message['sender_type'] == 'user':
-            message['text'] = '*' + message['text']  + '*'
+            message['text'] = '👤: *' + message['text']  + '*'
         output.append(message)
-    output = sorted(output, key=lambda x: x['created_at'])
+    output = sorted(output, key=lambda x: x['created_at'], reverse=True)
     return output
 
 def get_printable_conversation(user_id):

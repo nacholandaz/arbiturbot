@@ -89,7 +89,7 @@ switch_user:
 
 get_help_user:
     type: 'text'
-    text: "+u - generar usuario\nu - moverse a un usuario\nls u  - listar usuarios\nu# - seleccionar usuario\nm - enviar mensaje"
+    text: "+u = registar usuario\nu / ls u = listar usuarios\nu# / p# = selecionar conv.\np / ls p = listar conv. pendientes\nm = enviar mensaje\n* = usuario pendiente de respuesta\n! = concluir conv. pendiente\nls = listar mensajes"
     requires_user_response: 'false'
     next_interaction: cui
 

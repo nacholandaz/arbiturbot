@@ -16,12 +16,13 @@ from vendors import chat_api
 import geo
 import user
 
+app = Flask(__name__)
+
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=notification.run_notifications, trigger="interval", seconds=60)
 scheduler.start()
 
-app = Flask(__name__)
-
+user.agents()
 
 def build_message(user_id, text, body = None):
     message = {

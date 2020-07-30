@@ -16,4 +16,4 @@ clint
 apscheduler
 pytest
 pytest-mock
-easy_cache
+Flask-Cache

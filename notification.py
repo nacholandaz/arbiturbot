@@ -10,7 +10,7 @@ from vendors import chat_api
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
 notifications = client.bot.notifications
 
-def create(agent_id, user_id, thread_id, notification_type = 'interval', notification_nature = 'timed', settings = None):
+def create(agent_id, notification_type = 'interval', notification_nature = 'timed', settings = None):
     if settings == None:
       if notification_type == 'interval':
         settings = {
@@ -24,8 +24,6 @@ def create(agent_id, user_id, thread_id, notification_type = 'interval', notific
 
     notification = {
         'agent_id': agent_id,
-        'user_id': user_id,
-        'thread_id': thread_id,
         'created_at': datetime.now(),
         'last_notification_at': datetime.now(),
         'type': notification_type,
@@ -34,16 +32,6 @@ def create(agent_id, user_id, thread_id, notification_type = 'interval', notific
     }
 
     return notifications.insert_one(notification)
-
-def send_notification(agent_id, user_id, thread_id):
-    message = {'user_id': agent_id}
-    user_info = user.get(user_id)
-    user_name = user_info['name']
-    thread_info = user_info['threads'][thread_id]
-
-    text_alert = f"Recuerda contactar al usuario {user_name} sobre el tema abierto"
-    chat_api.reply(text_alert, message)
-    return True
 
 def requires_notification(notification):
     if notification['type'] == 'interval':
@@ -61,12 +49,16 @@ def requires_notification(notification):
         return True
     return False
 
+def send_notification(agent_id):
+    message = {'user_id': agent_id}
+    text_alert = f"Placeholder notification text"
+    chat_api.reply(text_alert, message)
+    return True
+
 def notify(notification):
     agent_id = notification['agent_id']
-    user_id = notification['user_id']
-    thread_id = notification['thread_id']
-    send_notification(agent_id, user_id, thread_id)
-    print(f'Alerting user: {agent_id} about user {user_id} about thread {thread_id})')
+    send_notification(agent_id)
+    print(f'({datetime.now().isoformat()}) Alerting user: {agent_id}')
     notifications.find_one_and_update(
         {"_id": notification['_id']},
         {"$set": {'last_notification_at': datetime.now()}},

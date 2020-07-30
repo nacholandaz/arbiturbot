@@ -1,16 +1,17 @@
 # Interacts with the database to follow conversations
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 from operator import itemgetter
 import os
 from geo import get_country_name_and_flag
-from easy_cache import ecached
+import pending_conversations
 
 
 from vendors import chat_api, sheets
 
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
 users = client.bot.users
+agents_source = client.bot.agent_source
 print(os.getenv('ARBITRUR_MONGO_URL'))
 
 def get(id_value, id_type = 'id'):
@@ -95,8 +96,25 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
     }
 
     if 'owner' in user_data: user['owner'] = user_data.get('owner')
+    users.insert_one(user)
 
-    return users.insert_one(user)
+    # Add pending conversation if the given user model is a client
+    if user_type == 'user':
+        if user_data.get('owner'):
+            owners_pending_convo = [user_data.get('owner')]
+        else:
+            owners_pending_convo = []
+        pending_conversations.create(user_id, owners = owners_pending_convo)
+
+    if user_type == 'agent':
+        for hour in [9, 17]:
+            notification.create(
+                user_id,
+                notification_type = 'set_time',
+                notification_nature = 'timed',
+                settings = { 'hour': hour, 'minute': 0 }
+            )
+    return True
 
 def update(user_id, user_data):
     # user_data = {field:value, field2:value2 ...z
@@ -124,9 +142,24 @@ def is_bot_answering(user_id):
     if answering: return answering
     return False
 
-@ecached('agents', 60*60)
+def insert_agent_data():
+    output = {}
+    agent_info = sheets.get_agents_data()
+    agent_info['created_at'] = datetime.now()
+    agents_source.insert([agent_info])
+    response = agent_info
+    del response['created_at']
+    print('**** Updated agent list ******')
+    return response
+
 def agents():
-    return sheets.get_agents_data()
+    all_agents = list(agents_source.find({}))
+    if len(all_agents) == 0: return insert_agent_data()
+    if datetime.now() > all_agents[0]['created_at'] + timedelta(hours=1):
+        return insert_agent_data()
+    response = all_agents[0]
+    del response['created_at']
+    return response
 
 def get_agent(user_id):
     for agent in agents():

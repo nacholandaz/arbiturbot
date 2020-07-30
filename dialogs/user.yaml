@@ -11,11 +11,10 @@ start:
     next_interaction: 'finish_conversation'
 
 finish_conversation:
-    type: 'text'
+    type: 'follow_back'
     text: 'Gracias, estamos notificando un Representante por favor espera un momento'
     requires_user_response: 'true'
     next_interaction: 'finish_conversation'
-
 
 
 

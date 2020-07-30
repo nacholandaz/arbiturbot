@@ -59,14 +59,14 @@ def insert_row(context):
 
 def get_agents_data():
 
-    #records = client.open_by_url(agents_url).sheet1.get_all_records()
-    #output = {}
-    #for row in records:
-    #    row['phone'] = str(row['phone'])
-    #    if row['disable'] != 'yes':
-    #        output[row['phone']] = row
-    output = {
-        '8118225870': {'phone': '8118225870', 'name': 'Nacho', 'disable': 'no'}
-    }
+    records = client.open_by_url(agents_url).sheet1.get_all_records()
+    output = {}
+    for row in records:
+        row['phone'] = str(row['phone'])
+        if row['disable'] != 'yes':
+            output[row['phone']] = row
+    #output = {
+    #    '8118225870': {'phone': '8118225870', 'name': 'Nacho', 'disable': 'no'}
+    #}
     print(output)
     return output

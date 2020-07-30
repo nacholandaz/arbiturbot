@@ -24,15 +24,15 @@ def logic(interaction, message):
         if user_found.get('owner') is None:
             user.update(user_found['id'], { 'owner': user_id } )
 
-        current_p = pending_conversation.find(user_id = user_found['id'], closed = False)[0].get('id')
+        current_p = pending_conversations.find(user_id = user_found['id'], closed = False)[0].get('id')
         conversation.update_context(user_id, 'current_pending_conversation', current_p)
-        pending_conversation.add_owner(current_p, user_id)
-        pending_conversation.remove_new_messages(current_p)
+        pending_conversations.add_owner(current_p, user_id)
+        pending_conversations.remove_new_messages(current_p)
 
         s_msg = "Haz selecionado al "+user_found['uuid']+" "+user_found['name']
         chat_api.reply(s_msg, message)
 
-        s_msg = "Con la conversacion pendiente "+ pending_conversation['id']
+        s_msg = "Con la conversacion pendiente "+ str(current_p)
         chat_api.reply(s_msg, message)
 
     else:

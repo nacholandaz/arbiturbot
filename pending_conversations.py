@@ -51,27 +51,28 @@ def find(user_id = None, owner = None, closed = None, new_messages = None):
   if closed:
     response = [ item for item in response if item['closed'] == closed]
   if new_messages:
-    response = [ item for item in response if item['new_messages'] == new_message]
+    response = [ item for item in response if item['new_messages'] == new_messages]
   return response
 
 def pending_conversations_agent_indicator(agent_id):
-  number_pending_conversations = len(find(owner=agent_id))
+  n_pending_conv = len(find(owner=agent_id, closed = False, new_messages = True))
   output_string = ''
-  for n in range(number_pending_conversations):
+  for n in range(n_pending_conv):
     output_string += "*"
   return output_string
 
 def close(pending_conv_id):
+
   pending_conversations.find_one_and_update(
     {'id': pending_conv_id},
-    {"$set": {'closed': True}}
+    {"$set": {'closed': True, 'new_messages': False}}
   )
   return True
 
 def open(pending_conv_id):
   pending_conversations.find_one_and_update(
     {'id': pending_conv_id},
-    {"$set": {'closed': False}}
+    {"$set": {'closed': False, 'new_messages': True}}
   )
   return True
 
