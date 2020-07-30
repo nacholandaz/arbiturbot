@@ -2,7 +2,9 @@ from phone_iso3166.country import phone_country
 import conversation
 import user
 import thread
+import pending_conversations
 from vendors import chat_api
+from datetime import datetime
 
 
 def logic(interaction, message):
@@ -30,7 +32,13 @@ def logic(interaction, message):
       }
 
       user.create(id_create_user, user_data, 'outbound')
-      thread.create(id_create_user, -1)
+
+      message_start = { 'user_id': id_create_user, 'text': '***Inicio Conversacion Outbound' }
+      conversation.create(message_start, user_type= 'bot', message_type= 'bot_utterance', interaction_name = 'finish_conversation')
+      pending_conversations.create(id_create_user, [user_id])
+      conversation.update_context(id_create_user, 'last_reply', datetime.now())
+
+
       user_register = f"Haz registrado a un nuevo usuario. {name} ({phone})"
       chat_api.reply(user_register, message)
 
