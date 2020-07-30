@@ -6,6 +6,7 @@ from geo import get_country_name_and_flag
 import user
 
 from vendors import chat_api
+from interactions import list_pending_conversations
 
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
 notifications = client.bot.notifications
@@ -51,8 +52,9 @@ def requires_notification(notification):
 
 def send_notification(agent_id):
     message = {'user_id': agent_id}
-    text_alert = f"Placeholder notification text"
-    chat_api.reply(text_alert, message)
+    text_alert = f"Hola, este es un recordatorio automatizado de tus conversaciones pendientes"
+    chat.api.reply(text_alert, message)
+    list_pending_conversations.logic({}, message)
     return True
 
 def notify(notification):

@@ -31,6 +31,8 @@ cui:
         'p': list_pending,
         'p#': switch_pending,
         '!': close_pending,
+        'a': list_users,
+        's': pre_switch_agent,
     }
     next_interaction_failure: error_command
 
@@ -77,6 +79,11 @@ list_pending:
     requires_user_response: 'false'
     next_interaction: cui
 
+list_agents:
+    type: list_agents
+    requires_user_response: 'false'
+    next_interaction: cui
+
 list:
     type: ls_command
     requires_user_response: 'false'
@@ -87,13 +94,24 @@ switch_user:
     requires_user_response: 'false'
     next_interaction: cui
 
-get_help_user:
-    type: 'text'
-    text: "+u = registar usuario\nu / ls u = listar usuarios\nu# / p# = selecionar conv.\np / ls p = listar conv. pendientes\nm = enviar mensaje\n* = usuario pendiente de respuesta\n! = concluir conv. pendiente\nls = listar mensajes"
+pre_switch_agent:
+    type: pre_switch_agent
+    requires_user_response: 'true'
+    next_interaction: switch_agent
+    no_redirect_user: cui
+
+switch_agent:
+    type: switch_agent
     requires_user_response: 'false'
     next_interaction: cui
 
 message_user:
     type: 'redirect_message'
+    requires_user_response: 'false'
+    next_interaction: cui
+
+get_help_user:
+    type: 'text'
+    text: "+u = registar usuario\nu / ls u = listar usuarios\nu# / p# = selecionar conv.\np / ls p = listar conv. pendientes\nm = enviar mensaje\n* = usuario pendiente de respuesta\n! = concluir conv. pendiente\nls = listar mensajes\na = listar agentes\ns = cambiar agente"
     requires_user_response: 'false'
     next_interaction: cui

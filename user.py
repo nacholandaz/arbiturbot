@@ -53,7 +53,7 @@ def fetch_user_data(user_data):
 
 def fetch_agent(user_id):
     name = get_agent(user_id).get('name')
-    uuid = 'agent_' + name[0:3].lower()
+    uuid = 'a' + current_agent_index()
     phone = user_id.split('@')[0]
     return name, uuid, phone
 
@@ -65,6 +65,9 @@ def fetch_user(user_id):
 
 def current_user_index():
     return str(len(list(users.find({'type': 'user'})))+1)
+
+def current_agent_index():
+    return str(len(list(users.find({'type': 'agent'})))+1)
 
 def index_exists(uuid): len(list(users.find({'uuid': uuid}))) > 0
 

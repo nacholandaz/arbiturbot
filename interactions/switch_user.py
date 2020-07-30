@@ -24,7 +24,13 @@ def logic(interaction, message):
         if user_found.get('owner') is None:
             user.update(user_found['id'], { 'owner': user_id } )
 
-        current_p = pending_conversations.find(user_id = user_found['id'], closed = False)[0].get('id')
+        current_p_results = pending_conversations.find(user_id = redirect_user_id, closed = False)
+        current_p = current_p_results[0].get('id') if len(current_p_results)>0 else None
+        if current_p is None:
+            pending_conversations.create(user_found['id'], owners= [user_id])
+            current_p_results = pending_conversations.find(user_id = redirect_user_id, closed = False)
+            current_p = current_p_results[0].get('id') if len(current_p_results)>0 else None
+
         conversation.update_context(user_id, 'current_pending_conversation', current_p)
         pending_conversations.add_owner(current_p, user_id)
         pending_conversations.remove_new_messages(current_p)

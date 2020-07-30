@@ -108,6 +108,11 @@ def remove_owner(pending_conv_id, owner_remove):
   )
   return True
 
+def switch_owner(pending_conv_id, owner_remove, owner_add):
+  remove_owner(pending_conv_id, owner_remove)
+  add_owner(pending_conv_id, owner_add)
+  return True
+
 def alert_admins_pending(pending_conversation):
   if len(pending_conversation['owners']) == 0:
     agents = [u['id'] for u in user.find(user_type = 'agent')]

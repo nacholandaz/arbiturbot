@@ -15,6 +15,8 @@ def logic(interaction, message):
       list_users.logic(interaction, message)
     elif ls_type == 'c':
       list_cases.logic(interaction, message)
+    elif ls_type == 'a':
+      list_agents.logic(interaction, message)
     elif ls_type == 'p':
       list_pending_conversations.logic(interaction, message)
     else:

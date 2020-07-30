@@ -23,6 +23,9 @@ import interactions.create_case as create_case
 import interactions.close_case as close_case
 import interactions.close_pending_conversation as close_pending
 import interactions.follow_back as follow_back
+import interactions.list_agents as list_agents
+import interactions.pre_switch_agent as pre_switch_agent
+import interactions.switch_agent as switch_agent
 import conversation
 
 def get_next_interaction_name(interaction, message):
@@ -52,6 +55,9 @@ def get_next_interaction_name(interaction, message):
         'switch_pending': switch_pending.get_next_interaction,
         'close_pending': close_pending.get_next_interaction,
         'follow_back': follow_back.get_next_interaction,
+        'list_agents': list_agents.get_next_interaction,
+        'pre_switch_agent': pre_switch_agent.get_next_interaction,
+        'switch_agent': pre_switch_agent.get_next_interaction,
     }
     return next_interaction_function[interaction_type](interaction, message)
 
@@ -84,6 +90,9 @@ def run_interaction(interaction, message):
         'switch_pending': switch_pending.logic,
         'close_pending': close_pending.logic,
         'follow_back': follow_back.logic,
+        'list_agents': list_agents.logic,
+        'pre_switch_agent': pre_switch_agent.logic,
+        'switch_agent': pre_switch_agent.logic,
     }
     return logic_function[interaction_type](interaction, message)
 
