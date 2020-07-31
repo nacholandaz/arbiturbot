@@ -1,5 +1,5 @@
 from vendors import chat_api
-from interactions import list_users, list_cases, list_pending_conversations
+from interactions import list_users, list_cases, list_pending_conversations, list_agents
 import user
 import thread
 import conversation

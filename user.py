@@ -5,6 +5,7 @@ from operator import itemgetter
 import os
 from geo import get_country_name_and_flag
 import pending_conversations
+import notification
 
 
 from vendors import chat_api, sheets
@@ -149,6 +150,7 @@ def insert_agent_data():
     output = {}
     agent_info = sheets.get_agents_data()
     agent_info['created_at'] = datetime.now()
+    agents_source.remove({})
     agents_source.insert([agent_info])
     response = agent_info
     del response['created_at']

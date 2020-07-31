@@ -25,13 +25,14 @@ cui:
         '+u': add_user,
         'u': list_users,
         'ls': list,
+        'la': list,
         'u#': switch_user,
         'm': message_user,
         '?': get_help_user,
         'p': list_pending,
         'p#': switch_pending,
         '!': close_pending,
-        'a': list_users,
+        'a': list_agents,
         's': pre_switch_agent,
     }
     next_interaction_failure: error_command
@@ -96,9 +97,16 @@ switch_user:
 
 pre_switch_agent:
     type: pre_switch_agent
-    requires_user_response: 'true'
-    next_interaction: switch_agent
+    requires_user_response: 'false'
+    next_interaction: ask_agent_id
     no_redirect_user: cui
+
+ask_agent_id:
+    type: 'text'
+    text: 'Dime el identificador del agente que quieras que tome la conversación.'
+    requires_user_response: 'true'
+    next_interaction: 'switch_agent'
+
 
 switch_agent:
     type: switch_agent

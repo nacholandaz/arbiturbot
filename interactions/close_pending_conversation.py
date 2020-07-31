@@ -23,12 +23,12 @@ def logic(interaction, message):
 
     conversation.update_context(client_id, 'is_closing', True)
 
-    s_msg = "Se ha invitado confirmar al usuari@ {client_name}({current_p_conversation_id}) a confirmar el cierre de su caso."
+    s_msg = f"Se ha invitado confirmar al usuari@ {client_name}({current_p_conversation_id}) a confirmar el cierre de su caso."
     chat_api.reply(s_msg, message)
 
     message_client = {'user_id': client_id}
-    c_msg = "Agente {agent_name} ha informado que ya tu caso ya no requiere seguimiento ¿Puedes confirmar? Responde si o no."
-    chat_api.reply(c_msg, message)
+    c_msg = f"Agente {agent_name} ha informado que ya tu caso ya no requiere seguimiento ¿Puedes confirmar? Responde si o no."
+    chat_api.reply(c_msg, message_client)
 
     return True
 

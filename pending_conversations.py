@@ -48,9 +48,9 @@ def find(user_id = None, owner = None, closed = None, new_messages = None):
     return []
   if owner:
     response = [ item for item in response if owner in item['owners'] or item['owners'] == []]
-  if closed:
+  if closed is not None:
     response = [ item for item in response if item['closed'] == closed]
-  if new_messages:
+  if new_messages is not None:
     response = [ item for item in response if item['new_messages'] == new_messages]
   return response
 

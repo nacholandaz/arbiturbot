@@ -8,9 +8,10 @@ def logic(interaction, message):
     user_id = message['user_id']
     user_context = conversation.context(user_id)
     redirect_user = user_context.get('redirect_user')
-    conversation.update_context(user_id, 'no_redirect_user', True)
+    conversation.update_context(user_id, 'no_redirect_user', False)
 
     if redirect_user is None:
+        conversation.update_context(user_id, 'no_redirect_user', True)
         list_users.logic(interaction, message)
         return True
 

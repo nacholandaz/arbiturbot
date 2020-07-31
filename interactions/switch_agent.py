@@ -36,10 +36,10 @@ def logic(interaction, message):
     conversation.update_context(user_id, 'conversational_level', 'user')
     conversation.update_context(user_id, 'current_pending_conversation', None)
 
-    r_text = f'{agent_uuid} ha recibido al usuario {user_data['uuid']}'
+    r_text = f"{agent_uuid} ha recibido al usuario {user_data['uuid']}"
     chat_api.reply(r_text, message)
 
-    a_text = f'Has recibido al usuario {user_data['uuid']} de {user_id}'
+    a_text = f"Has recibido al usuario {user_data['uuid']} de {user_id}"
     chat_api.reply(a_text, {'user_id': agent_uuid, 'text': a_text})
     return True
 

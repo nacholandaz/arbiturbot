@@ -45,7 +45,7 @@ def requires_notification(notification):
       n_minute = notification_time['minute']
       corrected_now = datetime.now() - timedelta(hours=5)
       t_hour = corrected_now.hour
-      t_minute = corrected_now_now.minute
+      t_minute = corrected_now.minute
       if n_hour == t_hour and n_minute == t_minute:
         return True
     return False
