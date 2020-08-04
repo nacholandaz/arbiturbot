@@ -160,7 +160,7 @@ def insert_agent_data():
 def agents():
     all_agents = list(agents_source.find({}))
     if len(all_agents) == 0: return insert_agent_data()
-    if datetime.now() > all_agents[0]['created_at'] + timedelta(hours=1):
+    if datetime.now() > all_agents[0]['created_at'] + timedelta(minutes=5):
         return insert_agent_data()
     response = all_agents[0]
     del response['created_at']
