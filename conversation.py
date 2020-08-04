@@ -78,6 +78,13 @@ def find(user_id):
         conversation = None
     return conversation
 
+def delete(user_id):
+    try:
+        conversation = [conversation for conversation in list(conversations.remove({'user_id': user_id}))]
+    except:
+        conversation = None
+    return conversation
+
 def context(user_id):
     try:
         context_data = [conversation['context'] for conversation in list(conversations.find({'user_id': user_id}))][0]

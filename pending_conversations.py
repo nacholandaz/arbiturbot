@@ -104,7 +104,7 @@ def remove_owner(pending_conv_id, owner_remove):
   pen_conv = get(pending_conv_id)
   owners = [owner for owner in pen_conv['owners'] if owner != owner_remove]
   pending_conversations.find_one_and_update(
-    {'id'  : pending_conv_id}, {'set': {'owners': owners }}
+    {'id'  : pending_conv_id}, {'$set': {'owners': owners }}
   )
   return True
 
@@ -126,3 +126,14 @@ def alert_admins_pending(pending_conversation):
     }
     chat_api.reply(text, message)
   return None
+
+
+def delete_user(user_id):
+  response = list(pending_conversations.remove({'user_id':user_id}))
+  return True
+
+def delete_agent(agent_id):
+  pending_convos_agent = pending_conversations.find(owner=user_id)
+  for pending_convo in pending_convos_agent:
+    remove_owner(pending_convo['id'], agent_id)
+  return True

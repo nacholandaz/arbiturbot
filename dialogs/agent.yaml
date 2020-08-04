@@ -34,6 +34,7 @@ cui:
         '!': close_pending,
         'a': list_agents,
         's': pre_switch_agent,
+        'a#': switch_agent,
     }
     next_interaction_failure: error_command
 

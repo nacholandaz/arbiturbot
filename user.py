@@ -204,3 +204,53 @@ def server_user_id():
 def is_user_server(user_id):
     arbi_user = server_user_id()
     return user_id == arbi_user
+
+def remove_user(user_id):
+    user = list(users.remove({'id': user_id}))
+    return True
+
+def delete_user(user_id):
+    conversation.delete(user_id)
+    pending_conversations.delete_user(user_id)
+    remove_user_from_all_agents_redirect(user_id)
+    remove_user(user_id)
+    return True
+
+def delete_agent(agent_id):
+    conversation.delete(agent_id)
+    pending_conversations.delete_agent(agent_id)
+    remove_user(agent_id)
+    return True
+
+def remove_user_from_agent_redirect(user_id, agent_id):
+    user_context = conversation.context(agent_id)
+    redirect_user = user_context.get('redirect_user')
+    if redirect_user == user_id:
+        conversation.update_context(agent_id, 'redirect_user', None)
+        conversation.update_context(agent_id, 'redirect_name', None)
+        conversation.update_context(agent_id, 'redirect_phone', None)
+        conversation.update_context(agent_id, 'conversational_level', 'user')
+        conversation.update_context(agent_id, 'current_pending_conversation', None)
+
+def remove_user_from_all_agents_redirect(user_id):
+    agents_data = find(user_type = 'agent')
+    for agent in agents_data:
+        remove_user_from_agent_redirect(user_id, agent['id'])
+    return True
+
+
+def demote_to_user_if_needed(user_id, user_data):
+    agents_results = len(find(user_id = user_id, user_type = 'agent'))
+    if agents_results > 0 and get_agent(user_id) == 'user':
+        delete_agent(user_id)
+    create(user_id, user_data)
+    return True
+
+
+def promote_to_agent_if_needed(user_id, user_data):
+    user_results = len(find(user_id = user_id, user_type = 'user'))
+    if user_results == 0 and get_agent(user_id) == 'agent':
+        delete_user(user_id)
+    create(user_id, user_data)
+    return True
+

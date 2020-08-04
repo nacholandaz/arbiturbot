@@ -57,14 +57,12 @@ def get_next_interaction_name(interaction, message):
         'follow_back': follow_back.get_next_interaction,
         'list_agents': list_agents.get_next_interaction,
         'pre_switch_agent': pre_switch_agent.get_next_interaction,
-        'switch_agent': pre_switch_agent.get_next_interaction,
+        'switch_agent': switch_agent.get_next_interaction,
     }
     return next_interaction_function[interaction_type](interaction, message)
 
 def run_interaction(interaction, message):
     interaction_type = interaction.get('type')
-    if 'text' in interaction:
-        interaction = get_values_from_context(interaction, message)
     logic_function = {
         'text': text.logic,
         'multiple_choice': multiple_choice.logic,
@@ -92,14 +90,8 @@ def run_interaction(interaction, message):
         'follow_back': follow_back.logic,
         'list_agents': list_agents.logic,
         'pre_switch_agent': pre_switch_agent.logic,
-        'switch_agent': pre_switch_agent.logic,
+        'switch_agent': switch_agent.logic,
     }
     return logic_function[interaction_type](interaction, message)
 
-def get_values_from_context(interaction, message):
-    context = conversation.context(message['user_id'])
-    for key in context:
-        key_store = '${' + key + '}'
-        if key_store in interaction['text']:
-            interaction['text'] = interaction['text'].replace(key_store, context[key])
-    return interaction
+

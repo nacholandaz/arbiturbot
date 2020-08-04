@@ -5,6 +5,7 @@ import os
 import conversation
 import user
 import cli
+import log_handler
 
 CHAT_TOKEN = os.getenv('CHAT_TOKEN')
 
@@ -31,6 +32,7 @@ def reply(reply_text, message, canonical = True):
         'body': reply_text,
         'chatId': user_id
     }
+    log_handler.insert_message(meta_chat)
     if cli.is_on() == False:
         print(f'Sending text {reply_text} to chat api...')
         r = requests.post(f'https://eu87.chat-api.com/instance99459/sendMessage?token={CHAT_TOKEN}', data=meta_chat).json()

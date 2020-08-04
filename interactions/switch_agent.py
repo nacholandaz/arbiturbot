@@ -3,6 +3,7 @@ import conversation
 import user
 from vendors import chat_api
 from interactions import list_users, list_agents
+import pending_conversations
 
 def logic(interaction, message):
     user_id = message['user_id']
@@ -19,6 +20,12 @@ def logic(interaction, message):
     agent_data = agent_data_uuid[0]
     user_context = conversation.context(user_id)
     redirect_user_id = user_context.get('redirect_user')
+
+    if redirect_user_id is None:
+        r_text = 'No tienes ninguna conversación seleccionada'
+        chat_api.reply(r_text, message)
+        return True
+
     user_data = user.get(redirect_user_id)
     current_p_results = pending_conversations.find(user_id = redirect_user_id, closed = False)
     current_p = current_p_results[0].get('id') if len(current_p_results)>0 else None
