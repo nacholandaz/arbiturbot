@@ -23,8 +23,10 @@ def get(id_value, id_type = 'id'):
     return user
 
 
-def find(owner=None, thread_label = None, thread_solved = None, name = None, phone = None, uuid = None, user_type = None):
+def find(user_id = None, owner=None, thread_label = None, thread_solved = None, name = None, phone = None, uuid = None, user_type = None):
     all_users = list(users.find({}))
+    if user_id:
+        all_users = [ind_user for ind_user in all_users if user_id == ind_user['id']]
     if owner:
         all_users = [ind_user for ind_user in all_users if owner == ind_user['owner']]
     if thread_label:
@@ -243,14 +245,14 @@ def demote_to_user_if_needed(user_id, user_data):
     agents_results = len(find(user_id = user_id, user_type = 'agent'))
     if agents_results > 0 and get_agent(user_id) == 'user':
         delete_agent(user_id)
-    create(user_id, user_data)
+        create(user_id, user_data)
     return True
 
 
 def promote_to_agent_if_needed(user_id, user_data):
     user_results = len(find(user_id = user_id, user_type = 'user'))
-    if user_results == 0 and get_agent(user_id) == 'agent':
+    if user_results > 0 and get_agent(user_id) == 'agent':
         delete_user(user_id)
-    create(user_id, user_data)
+        create(user_id, user_data)
     return True
 
