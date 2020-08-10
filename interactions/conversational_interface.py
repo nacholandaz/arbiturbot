@@ -16,7 +16,7 @@ def get_next_interaction(interaction, message):
     numbers_in_command = [s for s in user_command if s.isdigit()]
     strings_in_command = [s for s in user_command if not s.isdigit()]
 
-    available_selectors = [l[0] for l in list(interaction['available_commands'].keys())]
+    available_selectors = [str(l)[0] for l in list(interaction['available_commands'].keys())]
     command_string = ''.join(strings_in_command)
     if len(numbers_in_command)>0 and command_string in available_selectors:
         command_number = int(''.join(numbers_in_command))
