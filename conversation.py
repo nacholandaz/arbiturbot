@@ -102,9 +102,12 @@ def update_context(user_id, field, text):
     return True
 
 def find_last_message(user_id):
-    user_conversation = list(conversations.find({'user_id': user_id}))[0]
-    last_message_date = max(map(itemgetter('created_at'), user_conversation['messages']))
-    last_message = [message for message in user_conversation['messages'] if message['created_at'] == last_message_date][0]
+    try:
+        ser_conversation = list(conversations.find({'user_id': user_id}))[0]
+        last_message_date = max(map(itemgetter('created_at'), user_conversation['messages']))
+        last_message = [message for message in user_conversation['messages'] if message['created_at'] == last_message_date][0]
+    except:
+        last_message = None
     return last_message
 
 

@@ -10,11 +10,15 @@ import os
 import user
 import conversation
 import notification
+import pending_conversations
 import log_handler
 import atexit
 from vendors import chat_api
 import geo
 import user
+import sentry_sdk
+# Sentry connected to arbi gmail
+sentry_sdk.init(os.getenv('SENTRY_URL'))
 
 app = Flask(__name__)
 
@@ -112,6 +116,8 @@ def messages_route():
         list(user.users.remove())
         list(conversation.conversations.remove())
         list(notification.notifications.remove())
+        list(pending_conversations.pending_conversations.remove({}))
+        list(user.agents_source.remove({}))
         chat_api.reply('Reseteado',message, False)
         chat_api.reply('*Log creado*', message, False)
 

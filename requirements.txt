@@ -17,3 +17,4 @@ apscheduler
 pytest
 pytest-mock
 Flask-Cache
+sentry-sdk==0.16.2

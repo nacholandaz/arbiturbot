@@ -53,7 +53,7 @@ def requires_notification(notification):
 def send_notification(agent_id):
     message = {'user_id': agent_id}
     text_alert = f"Hola, este es un recordatorio automatizado de tus conversaciones pendientes"
-    chat.api.reply(text_alert, message)
+    chat_api.reply(text_alert, message)
     list_pending_conversations.logic({}, message)
     return True
 
@@ -71,9 +71,8 @@ def notify(notification):
 
 def run_notifications():
     notifications_to_run = list(notifications.find({}))
-    print('Running notifications scheduler')
     for pending_notification in notifications_to_run:
       if requires_notification(pending_notification):
         notify(pending_notification)
-    print('Succesfully Ran Notifications')
+        print('Succesfully Ran Notification')
     return True

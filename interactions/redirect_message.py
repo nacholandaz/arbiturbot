@@ -7,7 +7,10 @@ def logic(interaction, message):
     user_id = message['user_id']
     text = message['text']
     user_context = conversation.context(user_id)
-    redirect_user = user_context['redirect_user']
+    redirect_user = user_context.get('redirect_user')
+    if redirect_user is None:
+        chat_api.reply('Asegurate de tener un Usuario (U) o Conversacion Pendiente (P) seleccionada', {'user_id': user_id})
+        return True
     redirect_name = user_context['redirect_name']
     redirect_phone = user_context['redirect_phone']
     message_redirect = { 'user_id': redirect_user}

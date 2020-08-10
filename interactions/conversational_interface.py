@@ -16,7 +16,9 @@ def get_next_interaction(interaction, message):
     numbers_in_command = [s for s in user_command if s.isdigit()]
     strings_in_command = [s for s in user_command if not s.isdigit()]
 
-    if len(numbers_in_command)>0:
+    available_selectors = [l[0] for l in list(interaction['available_commands'].keys())]
+
+    if len(numbers_in_command)>0 and user_command in available_selectors:
         command_number = int(''.join(numbers_in_command))
         user_command = ''.join(strings_in_command) + '#'
         conversation.update_context(user_id, 'command_number', command_number)
