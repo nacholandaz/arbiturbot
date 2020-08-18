@@ -2,7 +2,6 @@ initial_user_message:
     type: 'text'
     text: 'User generated text'
     next_interaction: start
-    save_intent: 'true'
 
 start:
     type: 'text'
