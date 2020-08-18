@@ -105,6 +105,14 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
     if 'owner' in user_data: user['owner'] = user_data.get('owner')
     users.insert_one(user)
 
+    if user_source == 'inbound':
+        conversation.create(message)
+    else:
+        conversation.create(message_start,
+                            user_type= 'bot',
+                            message_type= 'bot_utterance',
+                            interaction_name = 'finish_conversation')
+
     # Add pending conversation if the given user model is a client
     if user_type == 'user':
         if user_data.get('owner'):

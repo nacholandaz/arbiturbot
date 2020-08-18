@@ -34,7 +34,6 @@ def logic(interaction, message):
       user.create(id_create_user, user_data, 'outbound')
 
       message_start = { 'user_id': id_create_user, 'text': '***Inicio Conversacion Outbound' }
-      conversation.create(message_start, user_type= 'bot', message_type= 'bot_utterance', interaction_name = 'finish_conversation')
       pending_conversations.create(id_create_user, [user_id])
       conversation.update_context(id_create_user, 'last_reply', datetime.now())
 
