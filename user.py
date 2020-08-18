@@ -107,10 +107,10 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
 
     message = {'user_id': user_id}
     if user_source == 'inbound':
-        message['text'] = 'Start message'
+        message['text'] = 'Start message user'
         conversation.create(message)
     else:
-        message['text'] = 'Start message'
+        message['text'] = 'Start message bot'
         conversation.create(message,
                             user_type= 'bot',
                             message_type= 'bot_utterance',
