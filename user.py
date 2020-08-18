@@ -105,10 +105,13 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
     if 'owner' in user_data: user['owner'] = user_data.get('owner')
     users.insert_one(user)
 
+    message = {'user_id': user_id}
     if user_source == 'inbound':
+        message['text'] = 'Start message'
         conversation.create(message)
     else:
-        conversation.create(message_start,
+        message['text'] = 'Start message'
+        conversation.create(message,
                             user_type= 'bot',
                             message_type= 'bot_utterance',
                             interaction_name = 'finish_conversation')
