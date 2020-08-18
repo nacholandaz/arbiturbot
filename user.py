@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from operator import itemgetter
 import os
 from geo import get_country_name_and_flag
+import conversation
 import pending_conversations
 import notification
 
@@ -214,11 +215,11 @@ def remove_user(user_id):
 def delete(user_id):
     user_type = get_user_type(user_id)
     if user_type == 'user':
-        print("deleting user: {user_id}")
+        print(f"deleting user: {user_id}")
         delete_user(user_id)
     if user_type == 'agent':
-        print("deleting agent: {user_id}")
-        delete_agent(agent_id)
+        print(f"deleting agent: {user_id}")
+        delete_agent(user_id)
     return True
 
 def delete_user(user_id):
