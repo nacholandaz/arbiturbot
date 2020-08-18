@@ -82,7 +82,7 @@ def respond(data):
     user.demote_to_user_if_needed(user_id, user_data)
     user.promote_to_agent_if_needed(user_id, user_data)
 
-    if conversation.find(message) is None: conversation.create(message)
+    if conversation.find(user_id) is None: conversation.create(message)
     # If we are already handling a message and we are not done, ignore.
     conversation.update_canonical_conversation(user_id, RECIEVER_ID, text, 'user')
     if user.is_bot_answering(user_id) == True: return True

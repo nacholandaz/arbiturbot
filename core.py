@@ -40,6 +40,7 @@ def recieve_message(message):
         print(e)
         exception_flow(message)
         tb = traceback.format_exc()
+        user.delete(user_id)
         print(tb)
     return True
 

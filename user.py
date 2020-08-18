@@ -211,6 +211,16 @@ def remove_user(user_id):
     user = list(users.remove({'id': user_id}))
     return True
 
+def delete(user_id):
+    user_type = get_user_type(user_id)
+    if user_type == 'user':
+        print("deleting user: {user_id}")
+        delete_user(user_id)
+    if user_type == 'agent':
+        print("deleting agent: {user_id}")
+        delete_agent(agent_id)
+    return True
+
 def delete_user(user_id):
     conversation.delete(user_id)
     pending_conversations.delete_user(user_id)
