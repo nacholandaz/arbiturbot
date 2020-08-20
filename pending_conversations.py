@@ -133,7 +133,7 @@ def delete_user(user_id):
   return True
 
 def delete_agent(agent_id):
-  pending_convos_agent = pending_conversations.find(owner=user_id)
+  pending_convos_agent = find(owner = agent_id)
   for pending_convo in pending_convos_agent:
     remove_owner(pending_convo['id'], agent_id)
   return True

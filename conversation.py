@@ -80,7 +80,8 @@ def find(user_id):
 
 def delete(user_id):
     try:
-        conversation = [conversation for conversation in list(conversations.remove({'user_id': user_id}))]
+        list(conversations.remove({'user_id': user_id}))
+        conversation = True
     except:
         conversation = None
     return conversation

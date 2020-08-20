@@ -100,8 +100,12 @@ def move_conversation(message):
     if conversation.is_finished(user_id): return True
     last_message = conversation.find_last_message(user_id)
     # This fixes referencing a conversation with a user we dont have, but good to see why this would happen
+<<<<<<< HEAD
     #if last_message is None:
     #    conversation.create(message)
+=======
+    print(last_message)
+>>>>>>> 18a5baa50a7893cfe361841a89ed14403a841294
     last_interaction_name = last_message.get('interaction_name')
     print(last_interaction_name)
     last_interaction = dialog.get_interaction(last_interaction_name, user_id)
