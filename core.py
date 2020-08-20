@@ -11,6 +11,7 @@ import pending_conversations
 from vendors import chat_api
 import traceback
 import random
+import time
 
 from vendors import luis_ai
 
@@ -99,9 +100,8 @@ def move_conversation(message):
     if conversation.is_finished(user_id): return True
     last_message = conversation.find_last_message(user_id)
     # This fixes referencing a conversation with a user we dont have, but good to see why this would happen
-    if last_message is None:
-        conversation.create(message)
-    print(last_message)
+    #if last_message is None:
+    #    conversation.create(message)
     last_interaction_name = last_message.get('interaction_name')
     print(last_interaction_name)
     last_interaction = dialog.get_interaction(last_interaction_name, user_id)
