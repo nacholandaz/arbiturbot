@@ -105,7 +105,12 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
     if 'owner' in user_data: user['owner'] = user_data.get('owner')
     users.insert_one(user)
 
-    message = {'user_id': user_id}
+    message = {
+        'user_id': user_id,
+        'message': 'initial_message',
+        'created_at': datetime.now()
+    }
+
     if user_source == 'inbound':
         message['text'] = 'Start message user'
         conversation.create(message)
@@ -265,7 +270,7 @@ def remove_user_from_all_agents_redirect(user_id):
 
 def demote_to_user_if_needed(user_id, user_data):
     agents_results = len(find(user_id = user_id, user_type = 'agent'))
-    if agents_results > 0 and get_agent(user_id) == 'user':
+    if agents_results > 0 and get_user_type(user_id) == 'user':
         delete_agent(user_id)
         create(user_id, user_data)
     return True
@@ -273,7 +278,7 @@ def demote_to_user_if_needed(user_id, user_data):
 
 def promote_to_agent_if_needed(user_id, user_data):
     user_results = len(find(user_id = user_id, user_type = 'user'))
-    if user_results > 0 and get_agent(user_id) == 'agent':
+    if user_results > 0 and get_user_type(user_id) == 'agent':
         delete_user(user_id)
         create(user_id, user_data)
     return True
