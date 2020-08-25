@@ -18,7 +18,7 @@ def try_send(url, meta_chat):
     for i in range(0, total_tries):
         try:
             r = requests.post(url, data=meta_chat).json()
-            sent = 1
+            return r
         except:
             time.sleep(0.5)
     if sent == 0: print('We could not send the message to server...')
