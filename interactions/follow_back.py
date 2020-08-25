@@ -20,7 +20,13 @@ def logic(interaction, message):
         user_name = current_user.get('name')
 
 
-        if text == 'si':
+        if 'no' in text:
+            for owner in current_p_data['owners']:
+                agent_context = conversation.context(owner)
+                message = {'user_id': owner}
+                c_msg = f'El usuario {user_name} no ha confirmado el cierre de su conversación'
+                chat_api.reply(c_msg, message)
+        elif 'si' in text:
             pending_conversations.close(current_p_convo_id)
 
             for owner in current_p_data['owners']:
@@ -37,13 +43,6 @@ def logic(interaction, message):
                     conversation.update_context(owner, 'redirect_phone', None)
                     conversation.update_context(owner, 'conversational_level', 'user')
                     conversation.update_context(owner, 'current_pending_conversation', None)
-
-        elif text == 'no':
-            for owner in current_p_data['owners']:
-                agent_context = conversation.context(owner)
-                message = {'user_id': owner}
-                c_msg = f'El usuario {user_name} no ha confirmado el cierre de su conversación'
-                chat_api.reply(c_msg, message)
 
         conversation.update_context(user_id, 'is_closing', False)
         return True
