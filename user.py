@@ -9,6 +9,7 @@ import pending_conversations
 import notification
 
 
+
 from vendors import chat_api, sheets
 
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
@@ -72,6 +73,20 @@ def current_user_index():
 
 def current_agent_index():
     return str(len(list(users.find({'type': 'agent'})))+1)
+
+def clean_agent_index():
+    current_agents = list(users.find({'type': 'agent'}))
+    current_uuids = []
+    for agent in current_agents:
+        if agent['uuid'] in current_uuids:
+            agent['uuid'] = current_agent_index()
+            users.find_one_and_update(
+                {"id": agent['id']},
+                {"$set": agent}
+            )
+        current_uuids.append(agent['uuid'])
+    return True
+
 
 def index_exists(uuid): len(list(users.find({'uuid': uuid}))) > 0
 

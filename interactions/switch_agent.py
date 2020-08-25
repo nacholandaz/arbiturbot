@@ -9,6 +9,13 @@ def logic(interaction, message):
     user_id = message['user_id']
     text = message['text']
 
+    users_list = list(user.users.find({'type': 'agent'})) #message['user_id']
+    if len(users_list) == 0:
+        chat_api.reply("No hay agentes dados de alta", message)
+        return True
+    #Double check if uuids are correctly setup for agents
+    user.clean_agent_index()
+
     agent_uuid = text.split(' ')[0].lower()
     agent_data_uuid = user.find(uuid = agent_uuid)
 
