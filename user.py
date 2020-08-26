@@ -79,7 +79,7 @@ def clean_agent_index():
     current_uuids = []
     for agent in current_agents:
         if agent['uuid'] in current_uuids:
-            agent['uuid'] = current_agent_index()
+            agent['uuid'] = 'a' + current_agent_index()
             users.find_one_and_update(
                 {"id": agent['id']},
                 {"$set": agent}
