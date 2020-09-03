@@ -40,7 +40,14 @@ def build_message(user_id, text, body = None):
         print('*******')
         card_info = body
         card_separated = card_info.split('\n')
-        user_phone = user.clean_phone(card_separated[3].split(':')[-1])
+        raw_phone = None
+        if 'waid' in card_info:
+            raw_phone = card_info.split('waid=')[1].split(':')[0]
+        elif '+' in card_info:
+            raw_phone = card_info.split('+')[1].split('\n')[0]
+        else:
+            raw_phone = card_separated[3].split(':')[-1]
+        user_phone = user.clean_phone(raw_phone)
         message['card'] = {
             'name':card_separated[2].replace('FN:',''),
             'phone': user_phone,
