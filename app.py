@@ -99,7 +99,14 @@ def index_route():
 @app.route('/messages', methods=['GET','POST'])
 def messages_route():
     os.environ['CLI_ON'] = "0"
-    data = request.get_json().get('messages')[0]
+    data = None
+
+    try:
+        data = request.get_json().get('messages')[0]
+    except:
+        print('Invalid data received, Ignoring...')
+        return jsonify({'success': 'true'})
+
     text = data.get('body')
     user_id = data.get('author')
     message = build_message(user_id, text)
