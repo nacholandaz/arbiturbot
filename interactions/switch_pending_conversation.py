@@ -11,6 +11,10 @@ def logic(interaction, message):
 
     current_p_object = pending_conversations.get(current_p)
 
+    if current_p_object is None:
+        list_pending_conversations.logic(interaction, message)
+        return True
+
     redirect_user_number= current_p_object['user_id']
     user_found = user.get(redirect_user_number)
 

@@ -47,7 +47,7 @@ def find(user_id = None, owner = None, closed = None, new_messages = None):
   if len(response) == 0:
     return []
   if owner:
-    response = [ item for item in response if owner in item['owners'] or item['owners'] == []]
+    response = [ item for item in response if owner in item['owners'] or len(item['owners']) == 0]
   if closed is not None:
     response = [ item for item in response if item['closed'] == closed]
   if new_messages is not None:
@@ -114,6 +114,7 @@ def switch_owner(pending_conv_id, owner_remove, owner_add):
   return True
 
 def alert_admins_pending(pending_conversation):
+  print('Alerting Admins of new message')
   if len(pending_conversation['owners']) == 0:
     agents = [u['id'] for u in user.find(user_type = 'agent')]
   else:

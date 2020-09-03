@@ -9,6 +9,7 @@ import pending_conversations
 import notification
 
 
+
 from vendors import chat_api, sheets
 
 client = MongoClient(os.getenv('ARBITRUR_MONGO_URL'))
@@ -73,6 +74,20 @@ def current_user_index():
 def current_agent_index():
     return str(len(list(users.find({'type': 'agent'})))+1)
 
+def clean_agent_index():
+    current_agents = list(users.find({'type': 'agent'}))
+    current_uuids = []
+    for agent in current_agents:
+        if agent['uuid'] in current_uuids:
+            agent['uuid'] = 'a' + current_agent_index()
+            users.find_one_and_update(
+                {"id": agent['id']},
+                {"$set": agent}
+            )
+        current_uuids.append(agent['uuid'])
+    return True
+
+
 def index_exists(uuid): len(list(users.find({'uuid': uuid}))) > 0
 
 def create(user_id, user_data = {}, user_source = 'inbound'):
@@ -105,7 +120,12 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
     if 'owner' in user_data: user['owner'] = user_data.get('owner')
     users.insert_one(user)
 
-    message = {'user_id': user_id}
+    message = {
+        'user_id': user_id,
+        'message': 'initial_message',
+        'created_at': datetime.now()
+    }
+
     if user_source == 'inbound':
         message['text'] = 'Start message user'
         conversation.create(message)
@@ -132,6 +152,7 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
                 notification_nature = 'timed',
                 settings = { 'hour': hour, 'minute': 0 }
             )
+    clean_agent_index()
     return True
 
 def update(user_id, user_data):
@@ -169,6 +190,7 @@ def insert_agent_data():
     response = agent_info
     del response['created_at']
     print('**** Updated agent list ******')
+    clean_agent_index()
     return response
 
 def agents():
@@ -238,12 +260,14 @@ def delete_user(user_id):
     pending_conversations.delete_user(user_id)
     remove_user_from_all_agents_redirect(user_id)
     remove_user(user_id)
+    clean_agent_index()
     return True
 
 def delete_agent(agent_id):
     conversation.delete(agent_id)
     pending_conversations.delete_agent(agent_id)
     remove_user(agent_id)
+    clean_agent_index()
     return True
 
 def remove_user_from_agent_redirect(user_id, agent_id):
@@ -265,16 +289,18 @@ def remove_user_from_all_agents_redirect(user_id):
 
 def demote_to_user_if_needed(user_id, user_data):
     agents_results = len(find(user_id = user_id, user_type = 'agent'))
-    if agents_results > 0 and get_agent(user_id) == 'user':
+    if agents_results > 0 and get_user_type(user_id) == 'user':
         delete_agent(user_id)
         create(user_id, user_data)
+        clean_agent_index()
     return True
 
 
 def promote_to_agent_if_needed(user_id, user_data):
     user_results = len(find(user_id = user_id, user_type = 'user'))
-    if user_results > 0 and get_agent(user_id) == 'agent':
+    if user_results > 0 and get_user_type(user_id) == 'agent':
         delete_user(user_id)
         create(user_id, user_data)
+        clean_agent_index()
     return True
 

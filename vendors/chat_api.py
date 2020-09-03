@@ -11,6 +11,20 @@ CHAT_TOKEN = os.getenv('CHAT_TOKEN')
 CHAT_TOKEN = os.getenv('CHAT_URL')
 
 
+def try_send(url, meta_chat):
+    total_tries = 5
+    tries = 0
+    sent = 0
+    r = None
+    for i in range(0, total_tries):
+        try:
+            r = requests.post(url, data=meta_chat).json()
+            return r
+        except:
+            time.sleep(0.5)
+    if sent == 0: print('We could not send the message to server...')
+    return r
+
 def natural_reply_time(reply_text):
     #http://www.iphonehacks.com/2010/03/iphone-user-types-incredible-83-wpm-attributes-speed-to-capacitive-touch-screen.html
     return time.sleep(int(float(len(reply_text.split(' ')))//10.0))
@@ -21,7 +35,8 @@ def mark_as_read_and_wait(reply_text, message):
         'read': True,
         'chatId': user_id
     }
-    requests.post(f'{CHAT_URL}sendMessage?token={CHAT_TOKEN}', data=meta_chat).json()
+    url = f'{CHAT_URL}sendMessage?token={CHAT_TOKEN}'
+    r = try_send(url, meta_chat)
     # Read, then wait proportionally to writing time
     natural_reply_time(reply_text)
     return True
@@ -36,7 +51,8 @@ def reply(reply_text, message, canonical = True):
     log_handler.insert_message(meta_chat)
     if cli.is_on() == False:
         print(f'Sending text {reply_text} to chat api...')
-        r = requests.post(f'{CHAT_URL}sendMessage?token={CHAT_TOKEN}', data=meta_chat).json()
+        url = f'{CHAT_URL}sendMessage?token={CHAT_TOKEN}'
+        try_send(url, meta_chat)
     else:
         cli.puts_reply(meta_chat)
     if user.get(user_id):
