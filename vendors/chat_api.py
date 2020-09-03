@@ -8,7 +8,7 @@ import cli
 import log_handler
 
 CHAT_TOKEN = os.getenv('CHAT_TOKEN')
-CHAT_TOKEN = os.getenv('CHAT_URL')
+CHAT_URL = os.getenv('CHAT_URL')
 
 
 def try_send(url, meta_chat):
