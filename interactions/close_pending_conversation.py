@@ -27,7 +27,7 @@ def logic(interaction, message):
     chat_api.reply(s_msg, message)
 
     message_client = {'user_id': client_id}
-    c_msg = f"Agente {agent_name} ha informado que ya tu caso ya no requiere seguimiento ¿Puedes confirmar? Responde si o no."
+    c_msg = f"{agent_name} ha informado que ya tu caso ya no requiere seguimiento ¿Puedes confirmar? Responde si o no."
     chat_api.reply(c_msg, message_client)
 
     return True
