@@ -13,13 +13,24 @@ pending_conversations = client.bot.pending_conversations
 def get_next_index():
   return str(len(list(pending_conversations.find()))+1)
 
+def clean_pending_index():
+    current_p = list(pending_conversations.find({}))
+    current_pids = []
+    for p in current_p:
+        if p['id'] in current_pids:
+            p['id'] = 'p' + get_next_index()
+            pending_conversations.find_one_and_update(
+                {"id": p['id']},
+                {"$set": p}
+            )
+        current_pids.append(p['id'])
+    return True
+
 def create(user_id, owners = []):
   index = 'p' + get_next_index()
   creation_time = datetime.now()
-  uuid = user.get(user_id)['uuid']
   pending_conversation = {
       'user_id': user_id,
-      'user_uuid': uuid,
       'owners': owners,
       'id': index,
       'created_at': creation_time,
@@ -29,7 +40,7 @@ def create(user_id, owners = []):
   }
 
   pending_conversations.insert_one(pending_conversation)
-
+  clean_pending_index()
   return pending_conversation
 
 def get(pending_conversation_id):

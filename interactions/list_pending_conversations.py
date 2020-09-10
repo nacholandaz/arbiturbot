@@ -11,8 +11,9 @@ def logic(interaction, message):
   if len(p_list) == 0:
       chat_api.reply("No hay casos pendientes a resolver", message)
       return True
+
+  pending_conversations.clean_pending_index()
   for p in p_list:
-      p_user_uuid = p['user_uuid']
       star_messages = ''
       if p['new_messages'] == True:
           star_messages = '* '
