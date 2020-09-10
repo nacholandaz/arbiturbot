@@ -18,9 +18,11 @@ def clean_pending_index():
     current_pids = []
     for p in current_p:
         if p['id'] in current_pids:
+            past_pid = p['id']
             p['id'] = 'p' + get_next_index()
+            del p['_id']
             pending_conversations.find_one_and_update(
-                {"id": p['id']},
+                {"id": past_pid},
                 {"$set": p}
             )
         current_pids.append(p['id'])
