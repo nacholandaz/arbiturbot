@@ -13,6 +13,10 @@ def logic(interaction, message):
     name = user_context.get('new_user_info_name')
     phone = user_context.get('new_user_info_phone')
     country = user_context.get('new_user_info_country')
+    conversation.update_context(user_id, 'new_user_info_name', None)
+    conversation.update_context(user_id, 'new_user_info_phone', None)
+    conversation.update_context(user_id, 'new_user_info_country', None)
+
     id_create_user = user.phone_to_id(phone)
 
     users_by_name = user.find(name=name)
@@ -59,6 +63,7 @@ def logic(interaction, message):
 
     if no_change == True:
       chat_api.reply('El usuario no sufrio cambios', message)
+
     return True
 
 def get_next_interaction(interaction, message):
