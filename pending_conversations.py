@@ -16,16 +16,35 @@ def get_next_index():
 def clean_pending_index():
     current_p = list(pending_conversations.find({}))
     current_pids = []
+    current_pending_users = []
     for p in current_p:
-        if p['id'] in current_pids:
-            past_pid = p['id']
-            p['id'] = 'p' + get_next_index()
-            del p['_id']
-            pending_conversations.find_one_and_update(
-                {"id": past_pid},
-                {"$set": p}
+
+        # There can only be one open pending conversation
+        removed_p = False
+        if p['user_id'] in current_pending_users:
+          if p['closed'] == False:
+            removed_p = True
+            pending_conversations.remove(
+              {'id': p['id']}
             )
+        else:
+          if p['closed'] == False:
+            current_pending_users.append(p['user_id'])
+
+        if removed_p == True:
+          continue
+
+        if p['id'] in current_pids:
+        past_pid = p['id']
+        p['id'] = 'p' + get_next_index()
+        del p['_id']
+        pending_conversations.find_one_and_update(
+            {"id": past_pid},
+            {"$set": p}
+        )
+
         current_pids.append(p['id'])
+
     return True
 
 def create(user_id, owners = []):
