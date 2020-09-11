@@ -87,6 +87,18 @@ def clean_agent_index():
         current_uuids.append(agent['uuid'])
     return True
 
+def clean_user_index():
+    current_users = list(users.find({'type': 'user'}))
+    current_uuids = []
+    for user in current_users:
+        if user['uuid'] in current_uuids:
+            user['uuid'] = 'u' + current_user_index()
+            users.find_one_and_update(
+                {"id": user['id']},
+                {"$set": user}
+            )
+        current_uuids.append(user['uuid'])
+    return True
 
 def index_exists(uuid): len(list(users.find({'uuid': uuid}))) > 0
 
@@ -153,6 +165,7 @@ def create(user_id, user_data = {}, user_source = 'inbound'):
                 settings = { 'hour': hour, 'minute': 0 }
             )
     clean_agent_index()
+    clean_user_index()
     return True
 
 def update(user_id, user_data):
@@ -261,6 +274,7 @@ def delete_user(user_id):
     remove_user_from_all_agents_redirect(user_id)
     remove_user(user_id)
     clean_agent_index()
+    clean_user_index()
     return True
 
 def delete_agent(agent_id):
@@ -268,6 +282,7 @@ def delete_agent(agent_id):
     pending_conversations.delete_agent(agent_id)
     remove_user(agent_id)
     clean_agent_index()
+    clean_user_index()
     return True
 
 def remove_user_from_agent_redirect(user_id, agent_id):
@@ -293,6 +308,7 @@ def demote_to_user_if_needed(user_id, user_data):
         delete_agent(user_id)
         create(user_id, user_data)
         clean_agent_index()
+        clean_user_index()
     return True
 
 
@@ -302,5 +318,6 @@ def promote_to_agent_if_needed(user_id, user_data):
         delete_user(user_id)
         create(user_id, user_data)
         clean_agent_index()
+        clean_user_index()
     return True
 

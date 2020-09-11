@@ -7,6 +7,7 @@ import pending_conversations
 def logic(interaction, message):
   chat_api.reply("Selecciona un usuario@:", message)
   user_id = message['user_id']
+  user.clean_user_index()
   users_list = list(user.users.find({'type': 'user'})) #message['user_id']
   if len(users_list) == 0:
       chat_api.reply("No hay usuari@s dados de alta", message)

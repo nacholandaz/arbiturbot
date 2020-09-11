@@ -7,13 +7,13 @@ import pending_conversations
 def logic(interaction, message):
   chat_api.reply("Estos son l@s agentes disponibles:", message)
   user_id = message['user_id']
+  user.clean_agent_index()
   users_list = list(user.users.find({'type': 'agent'})) #message['user_id']
   if len(users_list) == 0:
       chat_api.reply("No hay agentes dados de alta", message)
       return True
 
   #Double check if uuids are correctly setup
-  user.clean_agent_index()
   for user_info in users_list:
       if 'name' not in user_info: continue
       user_id = user_info['id']
